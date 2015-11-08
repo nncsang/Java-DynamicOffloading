@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    style="@style/SpinnerDropDownItem"
+    android:padding="5px" >
+
+    <TextView
+        android:id="@+id/text_main_seen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/left_pic"
+        android:padding="16px"
+        android:textColor="#FFFFFF"
+        android:textSize="26px"
+        android:textStyle="bold"
+        android:gravity="center_horizontal|center_vertical" />
+
+</RelativeLayout>
