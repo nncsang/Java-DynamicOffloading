@@ -1,0 +1,275 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/image_5"
+    android:orientation="vertical"
+    tools:context="fr.eurecom.wifi3gproject.MainActivity" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="220dp"
+            android:layout_height="170dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="25dp"
+            android:background="@drawable/borders"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/InfoStatusNetwork"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/NetworkStatus"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textViewWifiIP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Wifi"
+                android:layout_marginLeft="25dp"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/textView3GIP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Cellular"
+                android:layout_marginLeft="25dp"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/textViewGatewayWifiIP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/GatewayWifi"
+                android:layout_marginLeft="25dp"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/TextViewGateway3GIP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Gateway3G"
+                android:layout_marginLeft="25dp"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/TextViewInterfaceWifi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/InterfaceWifi"
+                android:layout_marginLeft="25dp"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/TextViewInterface3G"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Interface3G"
+                android:layout_marginLeft="25dp"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/TextViewNetworkType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/NetworkType"
+                android:layout_marginLeft="25dp"
+                android:textSize="12sp" />
+            
+            <TextView
+                android:id="@+id/rssiWifi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/SignalStrengthWifi"
+                android:layout_marginLeft="25dp"
+                android:textSize="12sp" />
+            
+            <TextView
+                android:id="@+id/rssiCell"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/SignalStrengthCell"
+                android:layout_marginLeft="25dp"
+                android:textSize="12sp" />
+            
+        </LinearLayout>
+		
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/Refresh"
+                style="@style/btnStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:text="Refresh" />
+
+            <TextView
+                android:id="@+id/arrivalRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="15dp"
+                android:text="Arrival Rate (λ)"
+                android:textColor="#2B3856"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:visibility="invisible" />
+
+            <EditText
+                android:id="@+id/editArrivalRate"
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/borders2"
+                android:gravity="center_horizontal|center_vertical"
+                android:inputType="numberDecimal"
+                android:textSize="15sp"
+                android:visibility="invisible" />
+            
+            <TextView
+                android:id="@+id/wifiONDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Wifi On Duration"
+                android:textColor="#2B3856"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:visibility="invisible" />
+
+            <EditText
+                android:id="@+id/editwifiONDuration"
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/borders2"
+                android:gravity="center_horizontal|center_vertical"
+                android:inputType="numberDecimal"
+                android:textSize="15sp"
+                android:visibility="invisible" />
+         	
+            <TextView
+                android:id="@+id/wifiOffDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Wifi On Duration"
+                android:textColor="#2B3856"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:visibility="invisible" />
+
+            <EditText
+                android:id="@+id/editwifiOffDuration"
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/borders2"
+                android:gravity="center_horizontal|center_vertical"
+                android:inputType="numberDecimal"
+                android:textSize="15sp"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/configuration"
+                style="@style/btnStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:onClick="SetConfigurationListener"
+                android:text="Configuration"
+                android:textSize="13sp"
+                android:typeface="sans" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="45dp"
+            android:layout_marginTop="25dp"
+            android:text="Select Policy"
+            android:typeface="sans"
+            android:textSize="16sp"
+            android:textColor="#2B3856"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="89dp"
+            android:layout_marginTop="25dp"
+            android:text="Select Profile"
+            android:typeface="sans"
+            android:textSize="16sp"
+            android:textColor="#2B3856"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal" >
+
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp" />
+
+        <Spinner
+            android:id="@+id/spinner2"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="gravity"
+            android:layout_marginLeft="35dp"/>
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/borders"
+        android:textOff="Sequential"
+        android:textOn="Parallel" />
+    
+    <Button
+        android:id="@+id/StartDownload"
+        style="@style/btnStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        android:text="Start Download" />
+
+</LinearLayout>

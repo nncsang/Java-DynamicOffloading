@@ -1,0 +1,44 @@
+package fr.eurecom.wifi3gproject;
+
+public class Profiles {
+	
+	//double[] lambda = {0.1, 0.5, 1000.0};
+	String[] number_of_files = {"new_urls.txt","new_urls.txt","new_urls_1350MB.txt"};
+	int[] number_of_threads = {4, 50, 150};
+	double[] utilization = {0.1, 0.5, 0.9};
+	
+	public void warmUp(){
+		Constants.URL_NAME = number_of_files[0];
+		Constants.THREADS = number_of_threads[0];
+		Constants.debug = true;
+		Constants.enable_arrival_pattern = false;
+		Constants.enable_wifi_on_off_pattern = false;
+		Constants.SYSTEM_UTILIZATION = utilization[2];
+	}
+	
+	public void overloadedNetwork(){
+		Constants.URL_NAME = number_of_files[1];
+		Constants.THREADS = number_of_threads[0];
+		Constants.debug = true;
+		Constants.enable_arrival_pattern = false;
+		Constants.enable_wifi_on_off_pattern = false;
+	}
+	
+	public void sparseNetworkWiFiOnOffPatternDisabled(double arrival_rate){
+		Constants.LAMBDA_IN = arrival_rate;
+		Constants.URL_NAME = number_of_files[1];
+		Constants.THREADS = number_of_threads[0];
+		Constants.debug = true;
+		Constants.enable_arrival_pattern = true;
+		Constants.enable_wifi_on_off_pattern = false;
+	}
+	
+	public void sparseNetworkWiFiOnOffPatternEnabled(double arrival_rate){
+		Constants.LAMBDA_IN = arrival_rate;
+		Constants.URL_NAME = number_of_files[1];
+		Constants.THREADS = number_of_threads[0];
+		Constants.debug = true;
+		Constants.enable_arrival_pattern = true;
+		Constants.enable_wifi_on_off_pattern = true;
+	}
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename field &apos;total_success&apos; in &apos;fr.eurecom.wifi3gproject.DownloadFilesTask&apos; to &apos;total_processed&apos;&#x0A;- Original project: &apos;Wifi3GProject&apos;&#x0A;- Original element: &apos;fr.eurecom.wifi3gproject.DownloadFilesTask.total_success&apos;&#x0A;- Renamed element: &apos;fr.eurecom.wifi3gproject.DownloadFilesTask.total_processed&apos;&#x0A;- Update references to refactored element&#x0A;- Update textual occurrences in comments and strings" delegate="false" deprecate="false" description="Rename field &apos;total_success&apos;" flags="589830" getter="false" id="org.eclipse.jdt.ui.rename.field" input="/src&lt;fr.eurecom.wifi3gproject{DownloadFilesTask.java[DownloadFilesTask^total_success" name="total_processed" references="true" setter="false" stamp="1451646485239" textual="false" version="1.0"/>
+</session>
