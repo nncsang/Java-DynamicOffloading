@@ -90,6 +90,12 @@ public class Task implements  Callable<String>{
 		halfSize = obj.intValue();
 		req_time=0;
 		this.activity = activity;
+		
+		/* ADDED FOR DELAY OFFLOADING 
+		 * 
+		 * total: number of bytes have been downloaded
+		 * 
+		 * */
 		this.total = 0;
 	}
 	
@@ -129,12 +135,32 @@ public class Task implements  Callable<String>{
 
 	@Override
 	public String call() throws Exception {
-		  	
+		
+			/* ADDED FOR DELAY OFFLOADING 
+			 * 
+			 * Set task's state to RUNNING
+			 *  
+			 * */
 			Constants.task_state.set(ID, Constants.TASK_STATE.RUNNING);
+			
+			
 			//System.out.println("entering the call() function " + policy);
 			//if(policy == Constants.WIFI_3G){
 			
+			/* ADDED FOR DELAY OFFLOADING
+			 *  
+			 * Number of retry
+			 * num_of_retry == 1: first download
+			 * 
+			 * */
 			num_of_retry++;
+			
+			/* ADDED FOR DELAY OFFLOADING 
+			 * 
+			 * Only set req_time, start_wifi_time and call GetFileSizeANDServerIP during the
+			 * first try of downloading
+			 * 
+			 * */
 			if (num_of_retry == 1){
 				double req_time_start = System.currentTimeMillis();
 				double task_waiting_time =  req_time_start - this.task_start_time;
@@ -290,8 +316,12 @@ public class Task implements  Callable<String>{
 	connection.setConnectTimeout(Constants.LTIME);
 	connection.setInstanceFollowRedirects(false);
 	
+	/* ADDED FOR DELAY OFFLOADING 
+	 * 
+	 * Set Range option in HTTP_REQUEST header to continue download from last download byte
+	 * 
+	 * */
     if(file.exists() && total > 0){
-    	//System.out.println(file.length() + " - " + total);
          connection.setRequestProperty("Range", "bytes="+((int)total)+"-");
     }
     
@@ -311,6 +341,13 @@ public class Task implements  Callable<String>{
 	InputStream input = connection.getInputStream();
 
 	OutputStream output = new FileOutputStream(sdcard_path+"/"+this.filename);
+	
+	/* ADDED FOR DELAY OFFLOADING 
+	 * 
+	 * In case of resuming download, open file in append mode
+	 * to append bytes to the end of file
+	 * 
+	 * */
 	if (total != 0)
 		output = new FileOutputStream(sdcard_path+"/"+this.filename, true);
 
@@ -318,6 +355,12 @@ public class Task implements  Callable<String>{
 	
 	int count;
 	
+	/* ADDED FOR DELAY OFFLOADING 
+	 * 
+	 * Save start_time, start_reading_time for FinalStats
+	 * Only save these info on the first downloading
+	 * 
+	 * */
 	if (num_of_retry == 1){
 		start_time = System.currentTimeMillis();//Calendar.getInstance().getTimeInMillis();
 		start_reading_time = System.currentTimeMillis();
@@ -380,10 +423,23 @@ public class Task implements  Callable<String>{
 	
 	
 	while ((count = input.read(data)) != -1){
+		
+		/* ADDED FOR DELAY OFFLOADING
+		 * 
+		 * To check if Task is interrupted in case of ExecutorServices is shutdown
+		 *  
+		 *  */
 		if(isCancelled()){
 			input.close();
+			
+			/* ADDED FOR DELAY OFFLOADING 
+			 * 
+			 * Fixed bug: flush file before close
+			 * 
+			 * */
 			output.flush();
 			output.close();
+			
 			//_mutex.lock();
 			//activity.cancel_task_handler(ID);
 			//_mutex.lock();
@@ -486,6 +542,12 @@ public class Task implements  Callable<String>{
 		if (Constants.debug) System.out.println("CELL_TIME: " + max_duration_cell);
 	}
 	
+	
+	/* ADDED FOR DELAY OFFLOADING 
+	 * 
+	 * Set Task's state to SUCCESSED
+	 * 
+	 * */
 	_mutex.lock();
 	Constants.task_state.set(ID, Constants.TASK_STATE.SUCCESSED);
 	activity.notifyProgress();
@@ -522,7 +584,20 @@ public class Task implements  Callable<String>{
 			return "C" + ID;
 		}
 		else
+			{
+			
+			/* ADDED FOR DELAY OFFLOADING 
+			 * 
+			 * Set Task's state to FAILED_MANY_FAILES
+			 * 
+			 * */
+			_mutex.lock();
+			Constants.task_state.set(ID, Constants.TASK_STATE.FAILED_MANY_FAILES);
+			activity.notifyProgress();
+			_mutex.unlock();
+			
 			return "F" + ID;
+		}
 		//return "FAIL EXCEP Interface :"+this.Interface+" Error type "+e.getMessage()+ " ID: "+ID;  // TO DO: reassign the flow to the Cellular!
 	}finally{
 	//	wl.release();

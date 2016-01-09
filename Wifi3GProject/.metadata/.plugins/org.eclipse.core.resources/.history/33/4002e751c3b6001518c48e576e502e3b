@@ -1,0 +1,670 @@
+package fr.eurecom.wifi3gproject;
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.net.TrafficStats;
+import android.net.wifi.WifiManager;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
+import android.preference.PreferenceManager;
+import android.telephony.PhoneStateListener;
+import android.telephony.SignalStrength;
+import android.telephony.TelephonyManager;
+import android.text.Editable;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+import fr.eurecom.plots.PlotList;
+
+@SuppressLint({"Wakelock"})
+public class MainActivity extends Activity {
+
+	public static Context context;
+	private static int Connection = Constants.NO_CONNECTIONS;
+	public DownloadFilesTask Downloader;
+	Activity myActivity = this;
+	public static int policy;
+	public static int profile;
+	public static WakeLock wl;
+	public static long wifi_initial_usage;
+	public static long cell_initial_usage;
+	public static long total_initial_usage;
+	String[] policies;
+	String[] profiles;
+	public int index_1;
+	public int index_2;
+	public boolean experiment_running = false;
+	public static ProgressDialog progressDialog;
+	private String temp;
+	double arrival_rate;
+	public ArrayList<String> lines;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+
+		wifi_initial_usage = (long) ((TrafficStats.getTotalRxBytes() - TrafficStats
+				.getMobileRxBytes()) / 1048576.0);
+		cell_initial_usage = (long) (TrafficStats.getMobileRxBytes() / 1048576.0);
+		total_initial_usage = (long) (TrafficStats.getTotalRxBytes() / 1048576.0);
+
+		System.out.println("WIFI USAGE: "
+				+ (TrafficStats.getTotalRxBytes() - TrafficStats
+						.getMobileRxBytes()) / 1048576.0);
+		System.out.println("CELL USAGE: " + TrafficStats.getMobileRxBytes()
+				/ 1048576.0);
+		System.out.println("TOTAL USAGE: " + TrafficStats.getTotalRxBytes()
+				/ 1048576.0);
+
+		// keep app running while screen off
+		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Wake Lock");
+		super.onCreate(savedInstanceState);
+		wl.acquire();
+
+		setContentView(R.layout.activity_main_2);
+		MainActivity.context = getApplicationContext();
+		
+		final MediaPlayer mp = MediaPlayer.create(this, R.raw.intel_1b4wytmi);
+		Fragment1 dialogFragment = Fragment1.newInstance("Welcome to Mobile Offloading Application!");
+		dialogFragment.show(getFragmentManager(), "dialog");
+		
+		policies = getResources().getStringArray(R.array.policies);
+		Spinner s1 = (Spinner) findViewById(R.id.spinner1);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.custom_spinner, R.id.text_main_seen, policies);
+		adapter.setDropDownViewResource(R.layout.custom_spinner);
+		s1.setAdapter(adapter);
+		s1.setOnItemSelectedListener(new SpinnerActivity(0));
+		
+		profiles = getResources().getStringArray(R.array.profiles);
+		Spinner s2 = (Spinner) findViewById(R.id.spinner2);
+		ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,R.layout.custom_spinner, R.id.text_main_seen, profiles);
+		adapter2.setDropDownViewResource(R.layout.custom_spinner);
+		s2.setAdapter(adapter2);
+		s2.setOnItemSelectedListener(new SpinnerActivity(1));
+		
+		try {
+			API.runScript(
+					"clean.sh",
+					"iptables -F; iptables -t mangle -F; iptable -t nat -F; ip route flush tab 4;ip route flush tab 5; echo 1 > /proc/sys/net/ipv4/ip_forward;",
+					new StringBuilder(), 10000, true);
+			ShowNetworkInfo();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		SetOnStartListener();
+		SetOnRefreshListener();
+		mp.start();
+		
+	}
+
+	public void SetOnRefreshListener() {
+		Button b = (Button) findViewById(R.id.Refresh);
+		b.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				try {
+					ShowNetworkInfo();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		});
+	}
+	
+	public void SetConfigurationListener(View view) {
+		
+		LayoutInflater factory = LayoutInflater.from(this);
+
+		//text_entry is an Layout XML file containing two text field to display in alert dialog
+		final View textEntryView = factory.inflate(R.layout.config, null);
+
+		final EditText input1 = (EditText) textEntryView.findViewById(R.id.editRateWifi);
+		final EditText input2 = (EditText) textEntryView.findViewById(R.id.editRateCell);
+		final EditText input3 = (EditText) textEntryView.findViewById(R.id.editArrivalRate);
+		final EditText input4 = (EditText) textEntryView.findViewById(R.id.editDelayConstraint);
+
+
+		input1.setText(" ", TextView.BufferType.EDITABLE);
+		input2.setText(" ", TextView.BufferType.EDITABLE);
+		input3.setText(" ", TextView.BufferType.EDITABLE);
+		input4.setText(" ", TextView.BufferType.EDITABLE);
+
+		final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setIcon(R.drawable.wifi_offloading_1_editted).setTitle("Configuration Details").setView(textEntryView).setPositiveButton("Save",
+		  new DialogInterface.OnClickListener() {
+		   public void onClick(DialogInterface dialog, int whichButton) {
+
+		    Log.i("AlertDialog","TextEntry 1 Entered " + input1.getText().toString());
+		    
+		    Log.i("AlertDialog","TextEntry 2 Entered " + input2.getText().toString());
+		    Log.i("AlertDialog","TextEntry 3 Entered " + input3.getText().toString());
+		    Log.i("AlertDialog","TextEntry 4 Entered " + input4.getText().toString());
+		    /* User clicked OK so do some stuff */
+		   }
+		  }).setNegativeButton("Cancel",
+		  new DialogInterface.OnClickListener() {
+		   public void onClick(DialogInterface dialog,
+		     int whichButton) {
+		     /*
+		     * User clicked cancel so do some stuff
+		     */
+		   }
+		  });
+		alert.show();
+		
+			}
+
+	public void SetOnStartListener() {
+		final Button b = (Button) findViewById(R.id.StartDownload);
+		b.setOnClickListener(new OnClickListener() {
+
+			@SuppressWarnings("deprecation")
+			@Override
+			public void onClick(View v) {
+				
+				EditText ARate = (EditText) findViewById(R.id.editArrivalRate);
+				EditText WOnDuration = (EditText) findViewById(R.id.editwifiOnDuration);
+				EditText WOffDuration = (EditText) findViewById(R.id.editwifiOffDuration);
+
+				if (MainActivity.Connection != Constants.WIFI_3G) {
+					//Toast.makeText(MainActivity.context, "You need to activate both interfaces", Toast.LENGTH_LONG).show();
+					//return;
+				}
+				
+				if(index_1 == 0 && index_2 == 0){
+					Toast.makeText(MainActivity.context, "You need to select a policy and a profile", Toast.LENGTH_LONG).show();
+					return;
+				}else if(index_1 == 0){
+					Toast.makeText(MainActivity.context, "You need to select a policy", Toast.LENGTH_LONG).show();
+					return;
+				}else if(index_2 == 0){
+					Toast.makeText(MainActivity.context, "You need to select a profile", Toast.LENGTH_LONG).show();
+					return;
+				}else if( index_2 == 3 || index_2 == 4){
+				
+					if (ARate.getText().toString().length() == 0){
+						Toast.makeText(MainActivity.context, "You need to enter an arrival rate", Toast.LENGTH_LONG).show();
+						return;
+					}else{
+						try{
+							double val = Double.parseDouble(ARate.getText().toString());
+						}catch(Exception e){
+							Toast.makeText(MainActivity.context, "Arrival rate must be a number", Toast.LENGTH_LONG).show();
+							return;
+						}
+					}
+					
+					if (index_2 == 4){
+						if (WOnDuration.getText().toString().length() == 0){
+							Toast.makeText(MainActivity.context, "You need to enter Wifi ON Duration", Toast.LENGTH_LONG).show();
+							return;
+						}else{
+							try{
+								double val = Double.parseDouble(WOnDuration.getText().toString());
+							}catch(Exception e){
+								Toast.makeText(MainActivity.context, "Wifi ON Duration must be a number", Toast.LENGTH_LONG).show();
+								return;
+							}
+						}
+						
+						if (WOffDuration.getText().toString().length() == 0){
+							Toast.makeText(MainActivity.context, "You need to enter Wifi OFF Duration", Toast.LENGTH_LONG).show();
+							return;
+						}else{
+							try{
+								double val = Double.parseDouble(WOffDuration.getText().toString());
+							}catch(Exception e){
+								Toast.makeText(MainActivity.context, "Wifi OFF Duration must be a number", Toast.LENGTH_LONG).show();
+								return;
+							}
+						}
+					}
+				}
+
+				
+				b.setVisibility(View.INVISIBLE);
+
+				LoggerManager.CreateLogs();
+				SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+				SharedPreferences.Editor editor = settings.edit();
+				editor.putString("OnOff", "ON");
+				editor.commit();
+				editor.putString("StatOnOff", "ON");
+				editor.commit();
+				startService(new Intent(MainActivity.this, fr.eurecom.wifi3gproject.BatteryService.class));
+
+				if (index_1 == 1){
+					policy = Constants.WARM_UP;
+				} else if (index_1 == 2) {
+					policy = Constants.WIFI_3G;
+				} else if (index_1 == 3) {
+					policy = Constants.ONLY_WIFI;
+				} else if (index_1 == 4) {
+					policy = Constants.ONLY_3G;
+				} else if (index_1 == 5) {
+					policy = Constants.FLOW_BALANCE;
+				}
+
+				if (policy != Constants.NO_CONNECTIONS) {
+
+					Intent myIntent = new Intent(MainActivity.this, Statistics.class);
+					PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, myIntent, 0);
+					AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+					alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + Constants.INTERVAL_TH, pendingIntent);
+
+				} else {
+					LoggerManager.LogStatistics("No Dual Mode");
+				}
+
+				Switch mySwitch = (Switch) findViewById(R.id.switch1);
+				boolean mode;
+				if (mySwitch.isChecked()) {
+					mode = true;
+				} else {
+					mode = false;
+				}
+
+				findViewById(R.id.Refresh).setClickable(false);
+				findViewById(R.id.spinner1).setClickable(false);
+				findViewById(R.id.spinner2).setClickable(false);
+				findViewById(R.id.switch1).setClickable(false);
+				
+				
+				
+				if (index_2 == 1){
+					profile = Constants.WARM;
+					new Profiles().warmUp();
+				}
+				else if (index_2 == 2){
+					profile = Constants.OVERLOADED;
+					new Profiles().overloadedNetwork();
+				}
+				else if (index_2 == 3){
+					temp = ARate.getText().toString();
+					arrival_rate = Double.parseDouble(temp);
+					profile = Constants.ONLY_ARR_PATTERN;
+					new Profiles().sparseNetworkWiFiOnOffPatternDisabled(arrival_rate);
+				}
+				else if (index_2 == 4){
+					temp = ARate.getText().toString();
+					arrival_rate = Double.parseDouble(temp);
+					profile = Constants.ARR_PLUS_WIFI_PATTERN;
+					
+					temp = WOnDuration.getText().toString();
+					double on = Double.parseDouble(temp);
+					
+					temp = WOffDuration.getText().toString();
+					double off = Double.parseDouble(temp);
+					
+					new Profiles().sparseNetworkWiFiOnOffPatternEnabled(arrival_rate, on, off);
+				}
+
+				System.out.println("MEAN SIZE: " + Constants.MEAN_SIZE
+						+ " LAMBDA: " + Constants.LAMBDA_IN + " URL_NAME: "
+						+ Constants.URL_NAME + " NUM_THREADS: "
+						+ Constants.THREADS);
+
+				lines = readFromFile(Environment.getExternalStorageDirectory().getPath() + "/SpringProject2014/" + Constants.URL_NAME);
+				showDialog(0);
+				progressDialog.setProgress(0);
+				// ArrayList<String> lines =
+				// readFromFile(Environment.getExternalStorageDirectory().getPath()+"/SpringProject2014/url_unique_links.txt");
+	
+				Downloader = new DownloadFilesTask(lines, policy, mode, myActivity);
+				Downloader.execute();
+			}
+		});
+	}
+
+	public void ShowNetworkInfo() throws IOException {
+		
+		// Rssi values for Wireless and Cellular interface
+		TelephonyManager tel_mananer = (TelephonyManager) MainActivity.context.getSystemService(Context.TELEPHONY_SERVICE);
+		tel_mananer.listen(new AndroidPhoneStateListener(), PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+		
+		TextView tx = (TextView) findViewById(R.id.InfoStatusNetwork);
+		TextView WIP = (TextView) findViewById(R.id.textViewWifiIP);
+		TextView CELLIP = (TextView) findViewById(R.id.textView3GIP);
+		TextView GateWifiIP = (TextView) findViewById(R.id.textViewGatewayWifiIP);
+		TextView Gate3GIP = (TextView) findViewById(R.id.TextViewGateway3GIP);
+		TextView InterfaceWifi = (TextView) findViewById(R.id.TextViewInterfaceWifi);
+		TextView Interface3G = (TextView) findViewById(R.id.TextViewInterface3G);
+		TextView NetworkType = (TextView) findViewById(R.id.TextViewNetworkType);
+		TextView RssiWifi = (TextView) findViewById(R.id.rssiWifi);
+
+		WIP.setVisibility(View.VISIBLE);
+		CELLIP.setVisibility(View.VISIBLE);
+		GateWifiIP.setVisibility(View.VISIBLE);
+		Gate3GIP.setVisibility(View.VISIBLE);
+		InterfaceWifi.setVisibility(View.VISIBLE);
+		Interface3G.setVisibility(View.VISIBLE);
+		NetworkType.setVisibility(View.VISIBLE);
+		RssiWifi.setVisibility(View.VISIBLE);
+
+		switch (GetNetworkStatus.info()) {
+		case Constants.WIFI_3G:
+			tx.setText("Network Status: Dual Mode");
+			WIP.setText("Wifi: " + API.GetWifiIP());
+			CELLIP.setText("3G: " + API.Get3GIP());
+			GateWifiIP.setText("Gate Wifi: " + API.GetGatewayWifiIP());
+			Gate3GIP.setText("Gate 3G: " + API.GetGateway3GIP());
+			InterfaceWifi.setText("Interface Wifi: " + API.GetInterfaceWifi());
+			Interface3G.setText("Interface 3G: " + API.GetInterface3G());
+			NetworkType.setText("Network Type: " + getNT(tel_mananer.getNetworkType()));
+			MainActivity.Connection = Constants.WIFI_3G;
+			break;
+
+		case Constants.ONLY_WIFI:
+			tx.setText("Network Status: only wifi");
+			WIP.setVisibility(View.INVISIBLE);
+			CELLIP.setVisibility(View.INVISIBLE);
+			GateWifiIP.setVisibility(View.INVISIBLE);
+			Gate3GIP.setVisibility(View.INVISIBLE);
+			InterfaceWifi.setVisibility(View.INVISIBLE);
+			Interface3G.setVisibility(View.INVISIBLE);
+			NetworkType.setVisibility(View.INVISIBLE);
+			MainActivity.Connection = Constants.ONLY_WIFI;
+			break;
+
+		case Constants.ONLY_3G:
+			NetworkType.setText("Network Type: " + getNT(tel_mananer.getNetworkType()));
+
+			API.setIPDualMode();
+			API.SetIPGateways();
+
+			GateWifiIP.setText("Gate Wifi: " + API.GetGatewayWifiIP());
+			InterfaceWifi.setText("Interface Wifi: " + API.GetInterfaceWifi());
+			WIP.setText("Wifi: " + API.GetWifiIP());
+
+			Gate3GIP.setText("Gate 3G: " + API.GetGateway3GIP());
+			CELLIP.setText("3G: " + API.Get3GIP());
+			Interface3G.setText("Interface 3G: " + API.GetInterface3G());
+
+			tx.setText("Network Status: only 3G");
+			MainActivity.Connection = Constants.ONLY_3G;
+			break;
+
+		case Constants.FLOW_BALANCE:
+			tx.setText("Network Status: Dual Mode");
+			WIP.setText("Wifi: " + API.GetWifiIP());
+			CELLIP.setText("3G: " + API.Get3GIP());
+			GateWifiIP.setText("Gate Wifi: " + API.GetGatewayWifiIP());
+			Gate3GIP.setText("Gate 3G: " + API.GetGateway3GIP());
+			InterfaceWifi.setText("Interface Wifi: " + API.GetInterfaceWifi());
+			Interface3G.setText("Interface 3G: " + API.GetInterface3G());
+			NetworkType.setText("Network Type: " + getNT(tel_mananer.getNetworkType()));
+			MainActivity.Connection = Constants.FLOW_BALANCE;
+			break;
+
+		case Constants.WARM_UP:
+			tx.setText("Network Status: Warm Up");
+			WIP.setText("Wifi: " + API.GetWifiIP());
+			CELLIP.setText("3G: " + API.Get3GIP());
+			GateWifiIP.setText("Gate Wifi: " + API.GetGatewayWifiIP());
+			Gate3GIP.setText("Gate 3G: " + API.GetGateway3GIP());
+			InterfaceWifi.setText("Interface Wifi: " + API.GetInterfaceWifi());
+			Interface3G.setText("Interface 3G: " + API.GetInterface3G());
+			NetworkType.setText("Network Type: " + getNT(tel_mananer.getNetworkType()));
+			MainActivity.Connection = Constants.WARM_UP;
+			break;
+
+		case Constants.NO_CONNECTIONS:
+			tx.setText("Network Status: No connections");
+			WIP.setVisibility(View.INVISIBLE);
+			CELLIP.setVisibility(View.INVISIBLE);
+			GateWifiIP.setVisibility(View.INVISIBLE);
+			Gate3GIP.setVisibility(View.INVISIBLE);
+			InterfaceWifi.setVisibility(View.INVISIBLE);
+			Interface3G.setVisibility(View.INVISIBLE);
+			NetworkType.setVisibility(View.INVISIBLE);
+			MainActivity.Connection = Constants.NO_CONNECTIONS;
+			break;
+		}
+	}
+	
+	public String getNT(int value) {
+		switch (value) {
+		case 7:
+			return "1xRTT";
+		case 4:
+			return "CDMA";
+		case 2:
+			return "EDGE";
+		case 14:
+			return "EHRPD";
+		case 5:
+			return "EVDO_0";
+		case 6:
+			return "EVDO_A";
+		case 12:
+			return "EVDO_B";
+		case 1:
+			return "GPRS";
+		case 8:
+			return "HSDPA";
+		case 10:
+			return "HSPA";
+		case 15:
+			return "HSPA+";
+		case 9:
+			return "HSUPA";
+		case 11:
+			return "IDEN";
+		case 13:
+			return "LTE";
+		case 3:
+			return "UMTS";
+		case 0:
+			return "UNKNOWN";
+		}
+		return "UNKNOWN";
+	}
+
+	@Override
+	public void onBackPressed() {
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Are you sure? ")
+				.setCancelable(false)
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								LoggerManager.ReleaseLogHandler();
+								SharedPreferences settings = PreferenceManager
+										.getDefaultSharedPreferences(getApplicationContext());
+								SharedPreferences.Editor editor = settings
+										.edit();
+								editor.putString("OnOff", "OFF");
+								editor.commit();
+								editor.putString("StatOnOff", "OFF");
+								editor.commit();
+								finish();
+							}
+						})
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+
+	public ArrayList<String> readFromFile(String path) {
+
+		ArrayList<String> lines = new ArrayList<String>();
+
+		try {
+			FileInputStream fstream = new FileInputStream(path);
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String strLine;
+
+			// Read File Line By Line
+			while ((strLine = br.readLine()) != null) {
+				lines.add(strLine);
+			}
+
+			// Close the input stream
+			in.close();
+
+		} catch (Exception e) {// Catch exception if any
+			System.err.println("Error: " + e.getMessage());
+		}
+
+		return lines;
+
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case 0:
+			progressDialog = new ProgressDialog(this);
+			progressDialog.setIcon(R.drawable.wifi_offloading_1_editted);
+			progressDialog.setMax(lines.size());
+			progressDialog.setTitle("Downloading files...");
+			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			progressDialog.setCanceledOnTouchOutside(false);
+			progressDialog.setCancelable(false);
+			progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "STOP",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							LoggerManager.ReleaseLogHandler();
+							SharedPreferences settings = PreferenceManager
+									.getDefaultSharedPreferences(getApplicationContext());
+							SharedPreferences.Editor editor = settings.edit();
+							editor.putString("OnOff", "OFF");
+							editor.commit();
+							editor.putString("StatOnOff", "OFF");
+							editor.commit();
+							Downloader.cancel(true);
+							Intent Plot = new Intent(getApplicationContext(),
+									PlotList.class);
+							Bundle bundle = new Bundle();
+							bundle.putInt("policy", policy);
+							Plot.putExtras(bundle);
+							startActivity(Plot);
+							finish();
+						}
+					});
+			return progressDialog;
+		}
+		return null;
+	}
+	
+	public void doPositiveClick() {
+		
+		}
+	
+	private class AndroidPhoneStateListener extends PhoneStateListener {
+		
+		WifiManager wmanager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		TextView RssiCell = (TextView) findViewById(R.id.rssiCell);
+		TextView RssiWifi = (TextView) findViewById(R.id.rssiWifi);
+		public int signalStrengthValue;
+
+	    @Override
+	    public void onSignalStrengthsChanged(SignalStrength signalStrength) {
+	        super.onSignalStrengthsChanged(signalStrength);
+	        int rssi_wifi = wmanager.getConnectionInfo().getRssi();
+	        if (signalStrength.isGsm()) {
+	            if (signalStrength.getGsmSignalStrength() != 99)
+	                signalStrengthValue = signalStrength.getGsmSignalStrength() * 2 - 113;
+	            else
+	                signalStrengthValue = signalStrength.getGsmSignalStrength();
+	        } else {
+	            signalStrengthValue = signalStrength.getCdmaDbm();
+	        }
+	        RssiCell.setText("Cell Rssi: " + signalStrengthValue + " dBm");
+	        RssiWifi.setText("Wifi Rssi: " + rssi_wifi + " dBm");
+	    }
+	}
+	
+	private class SpinnerActivity implements OnItemSelectedListener {
+		
+		private int select_spinner;
+		
+		TextView AR = (TextView) findViewById(R.id.arrivalRate);
+		EditText EAR = (EditText) findViewById(R.id.editArrivalRate);
+		
+		TextView OD = (TextView) findViewById(R.id.wifiOnDuration);
+		EditText EOD = (EditText) findViewById(R.id.editwifiOnDuration);
+		
+		TextView FD = (TextView) findViewById(R.id.wifiOffDuration);
+		EditText EFD = (EditText) findViewById(R.id.editwifiOffDuration);
+		
+		private SpinnerActivity(int spinner_selection){
+			select_spinner= spinner_selection;
+		}
+	    
+	    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+	    	parent.getItemAtPosition(pos);
+	    	if (select_spinner == 0){
+	    		System.out.println("First spinner POSITION: " + pos);
+	    		index_1 = pos;
+	    	}
+	    	if (select_spinner == 1){
+	    		System.out.println("Second spinner POSITION: " + pos);
+	    		index_2 = pos;
+	    		if (pos == 3 || pos == 4){
+	    			AR.setVisibility(View.VISIBLE);
+	    			EAR.setVisibility(View.VISIBLE);
+	    		}else{
+	    			AR.setVisibility(View.INVISIBLE);
+	    			EAR.setVisibility(View.INVISIBLE);
+	    		}
+	    		
+	    		if (pos == 4){
+	    			OD.setVisibility(View.VISIBLE);
+	    			EOD.setVisibility(View.VISIBLE);
+	    			
+	    			FD.setVisibility(View.VISIBLE);
+	    			EFD.setVisibility(View.VISIBLE);
+	    		}else{
+	    			OD.setVisibility(View.INVISIBLE);
+	    			EOD.setVisibility(View.INVISIBLE);
+	    			
+	    			FD.setVisibility(View.INVISIBLE);
+	    			EFD.setVisibility(View.INVISIBLE);
+	    		}
+	    	} 
+	    }
+
+	    public void onNothingSelected(AdapterView<?> parent) {
+	    	System.out.println("NO POSITION:");
+	    }
+	}
+}

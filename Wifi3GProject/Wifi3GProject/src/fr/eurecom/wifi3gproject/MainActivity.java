@@ -213,7 +213,11 @@ public class MainActivity extends Activity {
 					Toast.makeText(MainActivity.context, "You need to select a profile", Toast.LENGTH_LONG).show();
 					return;
 				}else if( index_2 == 3 || index_2 == 4){
-				
+					/* ADDED FOR DELAY OFFLOADING 
+					 * 
+					 * For UI
+					 * 
+					 * */
 					if (ARate.getText().toString().length() == 0){
 						Toast.makeText(MainActivity.context, "You need to enter an arrival rate", Toast.LENGTH_LONG).show();
 						return;

@@ -58,17 +58,36 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 	static double start_downloadfilestask=0.0;
 	double end_downloadfilestask=0.0;
 	public static double downloadfilestask_duration;
+	
+	/* ADDED FOR DELAY OFFLOADING */
 	public static long currTime = 0;
 	private final Lock _mutex = new ReentrantLock(true);
 	private final Lock _mutex1 = new ReentrantLock(true);
 	private final ArrayList<Long> DelayPattern = new ArrayList<Long>();
 	static final ArrayList<Task> Tasks = new ArrayList<Task>();
+	
+	/*
+	 *  WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+	 *  Set WiFi ON = wifiManager.setWifiEnabled(true);
+	 *   
+	 *   Set WiFi OFF = boolean wifiEnabled = wifiManager.isWifiEnabled()
+	 */
+	
 	public final WifiManager wifiManager;
 	CompletionService ecs;
+	
 	public Timer t;
 	
 	public DownloadFilesTask(ArrayList<String> urls, int policy, boolean parallel, Activity myAct) {
+		
+		/* ADDED FOR DELAY OFFLOADING 
+		 * 
+		 * total_processed: number of files are downloaded successfully or failly
+		 * 
+		 * */
 		total_processed = 0;
+		
+		/* ADDED FOR DELAY OFFLOADING */
 		this.wifiManager = (WifiManager) myAct.getSystemService(Context.WIFI_SERVICE); 
 		this.myAct = myAct;
 		this.urls = urls;
@@ -169,6 +188,12 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 		if (Constants.debug) System.out.println("#### Sequential");
 		
 		for(int i=0; i<urls.size(); i++){
+			
+			/* ADDED FOR DELAY OFFLOADING 
+			 * 
+			 * Set task's state to CREATED
+			 * 
+			 * */
 			Constants.task_state.add(Constants.TASK_STATE.CREATED);
 			double task_start_time = System.currentTimeMillis();
 			FutureTask<String> future = new FutureTask<String>(new Task(urls.get(i), i, 0, urls.size(), policy, task_start_time, this));
@@ -197,6 +222,7 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 	public void ParalellExecution() throws MalformedURLException, IOException{
 		
 		//System.out.println("HERE 3");
+		
 		LinkedList<DelayedTask> ListTask = new LinkedList<DelayedTask>();
 		ArrayList<Long> wifi_on_off_pattern = new ArrayList<Long>();
 		
@@ -287,7 +313,12 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 				}
 			}
 			
-			//System.out.println(delay);
+			
+			/* ADDED FOR DELAY OFFLOADING 
+			 * 
+			 * Create tasks and save task's state
+			 * 
+			 * */
 			double task_start_time = System.currentTimeMillis();
 			DelayPattern.add(delay);
 			Task t = new Task(urls.get(i), i, delay * 1000, urls.size(), policy, task_start_time, this);
@@ -315,9 +346,20 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 		
 		d_wifi = (sum_dwf / count_wifi);
 		
+		/* ADDED FOR DELAY OFFLOADING 
+		 * 
+		 * Handle WiFi ON OFF Pattern
+		 * 
+		 * */
 		if (Constants.enable_wifi_on_off_pattern) {
 			final ArrayList<Long> wifi_pattern = WifiPattern();
 			
+			
+			/* ADDED FOR DELAY OFFLOADING 
+			 * 
+			 * Create global timer
+			 * 
+			 * */
 			t = new Timer();
 			t.scheduleAtFixedRate(new TimerTask(){
 	
@@ -325,6 +367,20 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 				public void run() {
 					_mutex.lock();
 					
+					
+					/* ADDED FOR DELAY OFFLOADING 
+					 * 
+					 * Check if it is an ON or OFF period
+					 * 
+					 * wi_fi pattern:
+					 * 
+					 * 10 20 30 40 50
+					 * 
+					 * 0-10: ON
+					 * 11-20: OFF
+					 * 21-30: ON
+					 * 
+					 * */
 					int index = -1;
 					for(int k=wifi_pattern.size() - 1; k >=0; k--){
 						if (currTime <= wifi_pattern.get(k)){
@@ -341,7 +397,19 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 							System.out.println("-------------------------------------");
 							System.out.println("************** WIFI ON **************");
 							System.out.println("-------------------------------------");
+							
+							
 							/* PERIOD TRANSFER FROM OFF TO ON */
+							
+							/* Restart ExecutorService */
+							executor = Executors.newFixedThreadPool(MAX_THREADS);
+							ecs = new ExecutorCompletionService(executor);
+							
+							/* Submit all Tasks in queue to ExecutorService 
+							 * And set these Tasks' state to SUMITTED_TO_EXECUTOR: waiting in queue to execute
+							 * Clear queue
+							 * 
+							 * */
 							if (Constants.queue.size() > 0){
 								for(int i = 0; i < Constants.queue.size(); i++){
 									int task_id = Constants.queue.get(i);
@@ -355,9 +423,15 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 							}
 						}
 						
+						// Set state of wifi to ON
 						Constants.IS_WIFI_AVAILABLE = true;
 
 						
+						/* 
+						 * Check for there are any incoming tasks
+						 * Submit these tasks to  ExecutorService
+						 * Set these tasks' state to SUMITTED_TO_EXECUTOR
+						 * */
 						for(int i = 0; i < Tasks.size(); i++){
 							if (Tasks.get(i).delay == currTime * 1000){
 								//System.out.println(Tasks.get(i).delay);
@@ -379,13 +453,17 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 							System.out.println("************** WIFI OFF**************");
 							System.out.println("-------------------------------------");
 							
-							
+							/* Logically turn-off wifi by shutting down ExecutorService */
 							executor.shutdownNow();
 						
-							executor = Executors.newFixedThreadPool(MAX_THREADS);
-							ecs = new ExecutorCompletionService(executor);
-							
+							/* 
+							 * 
+							 * Add all running tasks to queue
+							 * Set these tasks to ADDED_TO_QUEUE
+							 * 
+							 * */
 							for(int i = 0; i < Tasks.size(); i++){
+								
 								if (Constants.task_state.get(i) == Constants.TASK_STATE.RUNNING){
 									
 									/** TODO: add tasks in right order */
@@ -396,6 +474,13 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 								}
 							}
 							
+							
+							/* 
+							 * 
+							 * Add all waiting tasks in ExecutorService to queue
+							 * Set these tasks to ADDED_TO_QUEUE
+							 * 
+							 * */
 							for(int i = 0; i < Tasks.size(); i++){
 								if (Constants.task_state.get(i) == Constants.TASK_STATE.SUMITTED_TO_EXECUTOR){
 									
@@ -407,7 +492,15 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 							}
 						}
 						
+						/* Set state of WiFi to OFF */
 						Constants.IS_WIFI_AVAILABLE = false;
+							
+						/* 
+						 * Check for there are any incoming tasks
+						 * Submit these tasks to  queue
+						 * Set these tasks' state to ADDED_TO_QUEUE
+						 * 
+						 * */
 						
 						for(int i = 0; i < Tasks.size(); i++){
 							if (Tasks.get(i).delay == currTime * 1000){
@@ -440,6 +533,8 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 			try {
 				 while(true){
 					 _mutex1.lock();
+					 
+					 /* If all tasks are processed --> break */
 					 if (total_processed == Tasks.size())
 						 break;
 					 _mutex1.unlock();
