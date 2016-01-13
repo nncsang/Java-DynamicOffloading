@@ -1,0 +1,5 @@
+package fr.eurecom.wifi3gproject;
+
+public class NetworkChangeReceiver {
+
+}

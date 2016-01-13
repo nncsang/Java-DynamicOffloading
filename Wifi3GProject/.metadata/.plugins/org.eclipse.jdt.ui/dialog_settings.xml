@@ -20,10 +20,10 @@
 			<item value="11" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
-			<item value="INTERVAL_TH" key="pattern"/>
 			<item value="" key="javaElement"/>
-			<item value="4" key="searchFor"/>
+			<item value="INTERVAL_TH" key="pattern"/>
 			<item value="0" key="matchLocations"/>
+			<item value="4" key="searchFor"/>
 			<item value="false" key="isCaseSensitive"/>
 			<list key="workingSets">
 			</list>
@@ -32,10 +32,10 @@
 			<item value="15" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
-			<item value="Statistics" key="pattern"/>
 			<item value="" key="javaElement"/>
-			<item value="4" key="searchFor"/>
+			<item value="Statistics" key="pattern"/>
 			<item value="0" key="matchLocations"/>
+			<item value="4" key="searchFor"/>
 			<item value="false" key="isCaseSensitive"/>
 			<list key="workingSets">
 			</list>
@@ -44,22 +44,10 @@
 			<item value="15" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
+			<item value="" key="javaElement"/>
 			<item value="getThreshold" key="pattern"/>
-			<item value="" key="javaElement"/>
+			<item value="0" key="matchLocations"/>
 			<item value="4" key="searchFor"/>
-			<item value="0" key="matchLocations"/>
-			<item value="false" key="isCaseSensitive"/>
-			<list key="workingSets">
-			</list>
-		</section>
-		<section name="HISTORY0">
-			<item value="15" key="includeMask"/>
-			<item value="2" key="limitTo"/>
-			<item value="0" key="scope"/>
-			<item value="Constants.debug" key="pattern"/>
-			<item value="" key="javaElement"/>
-			<item value="0" key="searchFor"/>
-			<item value="0" key="matchLocations"/>
 			<item value="false" key="isCaseSensitive"/>
 			<list key="workingSets">
 			</list>
@@ -68,10 +56,22 @@
 			<item value="11" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
-			<item value="MEAN_SIZE" key="pattern"/>
 			<item value="" key="javaElement"/>
-			<item value="4" key="searchFor"/>
+			<item value="MEAN_SIZE" key="pattern"/>
 			<item value="0" key="matchLocations"/>
+			<item value="4" key="searchFor"/>
+			<item value="false" key="isCaseSensitive"/>
+			<list key="workingSets">
+			</list>
+		</section>
+		<section name="HISTORY0">
+			<item value="15" key="includeMask"/>
+			<item value="2" key="limitTo"/>
+			<item value="0" key="scope"/>
+			<item value="" key="javaElement"/>
+			<item value="Constants.debug" key="pattern"/>
+			<item value="0" key="matchLocations"/>
+			<item value="0" key="searchFor"/>
 			<item value="false" key="isCaseSensitive"/>
 			<list key="workingSets">
 			</list>
@@ -80,10 +80,10 @@
 			<item value="15" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
-			<item value="Contants.debug" key="pattern"/>
 			<item value="" key="javaElement"/>
-			<item value="4" key="searchFor"/>
+			<item value="Contants.debug" key="pattern"/>
 			<item value="0" key="matchLocations"/>
+			<item value="4" key="searchFor"/>
 			<item value="false" key="isCaseSensitive"/>
 			<list key="workingSets">
 			</list>
@@ -92,10 +92,10 @@
 			<item value="15" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
-			<item value="Constants.MEAN_SIZE" key="pattern"/>
 			<item value="" key="javaElement"/>
-			<item value="4" key="searchFor"/>
+			<item value="Constants.MEAN_SIZE" key="pattern"/>
 			<item value="0" key="matchLocations"/>
+			<item value="4" key="searchFor"/>
 			<item value="false" key="isCaseSensitive"/>
 			<list key="workingSets">
 			</list>
@@ -104,10 +104,10 @@
 			<item value="15" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
-			<item value="fr.eurecom.wifi3gproject.ComputeThreshold.getThreshold(double, double, double, double, double, double, double, double, double, double, double)" key="pattern"/>
 			<item value="=Wifi3GProject/src&lt;fr.eurecom.wifi3gproject{ComputeThreshold.java[ComputeThreshold~getThreshold~D~D~D~D~D~D~D~D~D~D~D" key="javaElement"/>
-			<item value="1" key="searchFor"/>
+			<item value="fr.eurecom.wifi3gproject.ComputeThreshold.getThreshold(double, double, double, double, double, double, double, double, double, double, double)" key="pattern"/>
 			<item value="0" key="matchLocations"/>
+			<item value="1" key="searchFor"/>
 			<item value="true" key="isCaseSensitive"/>
 			<list key="workingSets">
 			</list>
@@ -116,10 +116,10 @@
 			<item value="15" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
-			<item value="THREADS" key="pattern"/>
 			<item value="" key="javaElement"/>
-			<item value="4" key="searchFor"/>
+			<item value="THREADS" key="pattern"/>
 			<item value="0" key="matchLocations"/>
+			<item value="4" key="searchFor"/>
 			<item value="false" key="isCaseSensitive"/>
 			<list key="workingSets">
 			</list>
@@ -128,10 +128,10 @@
 			<item value="15" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
-			<item value="DEBUG" key="pattern"/>
 			<item value="" key="javaElement"/>
-			<item value="4" key="searchFor"/>
+			<item value="DEBUG" key="pattern"/>
 			<item value="0" key="matchLocations"/>
+			<item value="4" key="searchFor"/>
 			<item value="false" key="isCaseSensitive"/>
 			<list key="workingSets">
 			</list>
@@ -140,10 +140,10 @@
 			<item value="15" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
-			<item value="ComputeThreshold" key="pattern"/>
 			<item value="" key="javaElement"/>
-			<item value="0" key="searchFor"/>
+			<item value="ComputeThreshold" key="pattern"/>
 			<item value="0" key="matchLocations"/>
+			<item value="0" key="searchFor"/>
 			<item value="false" key="isCaseSensitive"/>
 			<list key="workingSets">
 			</list>
@@ -152,19 +152,19 @@
 			<item value="15" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
-			<item value="WARM_UP" key="pattern"/>
 			<item value="" key="javaElement"/>
-			<item value="4" key="searchFor"/>
+			<item value="WARM_UP" key="pattern"/>
 			<item value="0" key="matchLocations"/>
+			<item value="4" key="searchFor"/>
 			<item value="false" key="isCaseSensitive"/>
 			<list key="workingSets">
 			</list>
 		</section>
 	</section>
-	<section name="org.eclipse.ltk.ui.refactoring.settings">
+	<section name="quick_assist_proposal_size">
 	</section>
 	<section name="RenameInformationPopup">
 	</section>
-	<section name="quick_assist_proposal_size">
+	<section name="org.eclipse.ltk.ui.refactoring.settings">
 	</section>
 </section>

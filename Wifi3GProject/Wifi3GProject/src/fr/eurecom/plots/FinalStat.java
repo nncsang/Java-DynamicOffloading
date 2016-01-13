@@ -141,7 +141,16 @@ public class FinalStat extends Activity {
 			TextView DC = (TextView)findViewById(R.id.DelayCell);
 			TextView D = (TextView)findViewById(R.id.DelayT);
 			TextView Dur = (TextView)findViewById(R.id.duration_value);
-						
+			
+			TextView comming_task = (TextView)findViewById(R.id.task_comming_value);
+			TextView queued_task = (TextView)findViewById(R.id.task_queue_value);
+			
+			/* ADDED FOR DELAY OFFLOADING 
+			 * 
+			 */
+			comming_task.setText(Constants.TOTAL_TASKS_COMING_DURING_OFF_PERIOD);
+			queued_task.setText(Constants.TOTAL_TASKS_BEING_QUEUED);
+			
 			//WF.setText(String.valueOf(WifiFlows));
 			//CF.setText(String.valueOf(CellFlows));	
 			

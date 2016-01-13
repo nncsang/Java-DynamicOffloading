@@ -72,7 +72,7 @@ public final class R {
         public static final int TotWifiView=0x7f0b0021;
         public static final int WF=0x7f0b001e;
         public static final int WFView=0x7f0b001f;
-        public static final int action_settings=0x7f0b0038;
+        public static final int action_settings=0x7f0b003c;
         public static final int arrivalRate=0x7f0b000b;
         public static final int avgDWF=0x7f0b0032;
         public static final int cellRate=0x7f0b0018;
@@ -89,12 +89,16 @@ public final class R {
         public static final int lamda=0x7f0b0033;
         public static final int lamda_value=0x7f0b0034;
         public static final int left_pic=0x7f0b001d;
-        public static final int myLayout=0x7f0b0037;
+        public static final int myLayout=0x7f0b003b;
         public static final int rssiCell=0x7f0b0009;
         public static final int rssiWifi=0x7f0b0008;
         public static final int spinner1=0x7f0b0012;
         public static final int spinner2=0x7f0b0013;
         public static final int switch1=0x7f0b0014;
+        public static final int task_comming=0x7f0b0037;
+        public static final int task_comming_value=0x7f0b0038;
+        public static final int task_queue=0x7f0b0039;
+        public static final int task_queue_value=0x7f0b003a;
         public static final int textView1=0x7f0b0020;
         public static final int textView3GIP=0x7f0b0002;
         public static final int textViewGatewayWifiIP=0x7f0b0003;

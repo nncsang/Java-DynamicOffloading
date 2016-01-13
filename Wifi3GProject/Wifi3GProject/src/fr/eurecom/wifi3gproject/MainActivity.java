@@ -5,7 +5,9 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -50,7 +52,8 @@ public class MainActivity extends Activity {
 
 	public static Context context;
 	private static int Connection = Constants.NO_CONNECTIONS;
-	public DownloadFilesTask Downloader;
+	//public DownloadFilesTask1 Downloader;
+	public DownloadFilesTask1 Downloader;
 	Activity myActivity = this;
 	public static int policy;
 	public static int profile;
@@ -82,8 +85,9 @@ public class MainActivity extends Activity {
 		System.out.println("CELL USAGE: " + TrafficStats.getMobileRxBytes()
 				/ 1048576.0);
 		System.out.println("TOTAL USAGE: " + TrafficStats.getTotalRxBytes()
-				/ 1048576.0);
-
+				/ 1048576.0);		
+		
+		
 		// keep app running while screen off
 		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Wake Lock");
@@ -121,9 +125,12 @@ public class MainActivity extends Activity {
 			e.printStackTrace();
 		}
 
+		
+		
 		SetOnStartListener();
 		SetOnRefreshListener();
 		mp.start();
+		
 		
 	}
 
@@ -346,7 +353,10 @@ public class MainActivity extends Activity {
 				// ArrayList<String> lines =
 				// readFromFile(Environment.getExternalStorageDirectory().getPath()+"/SpringProject2014/url_unique_links.txt");
 	
-				Downloader = new DownloadFilesTask(lines, policy, mode, myActivity);
+				//Downloader = new DownloadFilesTask(lines, policy, mode, myActivity);
+				//Downloader.execute();
+				
+				Downloader = new DownloadFilesTask1(lines, policy, mode, myActivity);
 				Downloader.execute();
 			}
 		});
@@ -546,6 +556,21 @@ public class MainActivity extends Activity {
 
 		} catch (Exception e) {// Catch exception if any
 			System.err.println("Error: " + e.getMessage());
+			
+			return  new ArrayList<String>(
+				    Arrays.asList(
+				    		"http://upload.wikimedia.org/wikipedia/commons/f/fa/%22_12_-_ITALY_-_artichoke_in_bloom_-_BIO_high_quality_food_%28organic_farming%29.JPG",
+				    		"http://publicdomainarchive.com/?ddownload=47405",
+				    		"https://www.dropbox.com/s/r5l8t0nfjb3rp3b/135H.jpg?dl=1",
+				    		"http://download.thinkbroadband.com/20MB.zip",
+				    		"http://www.rngresearch.com/download/block0.rng",
+				    		"http://iliketowastemytime.com/system/files/snub-nosed-monkey-hd-wallpaper.jpg?download=1",
+				    		"http://www.mellowholidays.com/Views/Uploads/FrontImage/893512536-134037High_Resolution_Sunset_by_thereal7.jpg",
+				    		"http://mirror.internode.on.net/pub/test/10meg.test",
+				    		"http://qbrushes.net/wp-content/plugins/download-monitor/download.php?id=13+Cloud+Brushes",
+				    		"http://www.noao.edu/image_gallery/images/d5/suns.tiff",
+				    		"http://upload.wikimedia.org/wikipedia/commons/6/6c/High-quality_C._pepo_fruit_specimen.JPG",
+				    		"http://cdn4.tricksmachine.com/wp-content/uploads/2011/06/two_worlds.jpg]"));
 		}
 
 		return lines;
@@ -616,6 +641,23 @@ public class MainActivity extends Activity {
 	        RssiWifi.setText("Wifi Rssi: " + rssi_wifi + " dBm");
 	    }
 	}
+	
+	public boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("www.google.com"); //You can replace it with your name
+
+            if (ipAddr.equals("")) {
+                return false;
+            } else {
+                return true;
+            }
+
+        } catch (Exception e) {
+        	System.out.println(e.getMessage());
+            return false;
+        }
+
+    }
 	
 	private class SpinnerActivity implements OnItemSelectedListener {
 		

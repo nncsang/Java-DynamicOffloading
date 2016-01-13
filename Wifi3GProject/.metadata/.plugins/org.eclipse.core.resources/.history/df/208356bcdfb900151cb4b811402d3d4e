@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/WF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/WFView"
+        android:layout_alignBottom="@+id/WFView"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_toRightOf="@+id/TotWifiView"
+        android:gravity="center"
+        android:text="..." />
+
+    <TextView
+        android:id="@+id/CF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/TotWifiView"
+        android:layout_alignRight="@+id/WF"
+        android:layout_toRightOf="@+id/TotWifiView"
+        android:gravity="center"
+        android:text="..." />
+
+    <TextView
+        android:id="@+id/TotWifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/TotWifiView"
+        android:layout_alignLeft="@+id/CF"
+        android:layout_alignRight="@+id/CF"
+        android:gravity="center"
+        android:text="..." />
+
+    <TextView
+        android:id="@+id/TotCell"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/TotCellView"
+        android:layout_alignLeft="@+id/TotWifi"
+        android:layout_alignRight="@+id/TotWifi"
+        android:gravity="center"
+        android:text="..."  />
+
+    <TextView
+        android:id="@+id/DelayWifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/DelayWifiView"
+        android:layout_alignLeft="@+id/TotCell"
+        android:layout_alignRight="@+id/TotCell"
+        android:gravity="center"
+        android:text="..."  />
+
+    <TextView
+        android:id="@+id/DelayCell"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/DelayCellView"
+        android:layout_alignLeft="@+id/DelayWifi"
+        android:layout_alignRight="@+id/DelayWifi"
+        android:gravity="center"
+        android:text="..."  />
+
+    <TextView
+        android:id="@+id/RateWifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/RateWifiView"
+        android:layout_alignRight="@+id/DelayT"
+        android:layout_toRightOf="@+id/RateWifiView"
+        android:gravity="center"
+        android:text="..." />
+
+    <TextView
+        android:id="@+id/RateCell"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/RateCellView"
+        android:layout_alignLeft="@+id/RateWifi"
+        android:layout_alignRight="@+id/DelayT"
+        android:gravity="center"
+        android:text="..." />
+
+    <TextView
+        android:id="@+id/CFView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/WFView"
+        android:layout_alignRight="@+id/WFView"
+        android:layout_below="@+id/WFView"
+        android:text="% cell flows: " />
+
+    <TextView
+        android:id="@+id/TotWifiView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/CFView"
+        android:layout_below="@+id/CFView"
+        android:text="Total Mb wifi: " />
+
+    <TextView
+        android:id="@+id/TotCellView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TotWifiView"
+        android:layout_below="@+id/TotWifiView"
+        android:text="Total Mb cell: " />
+
+    <TextView
+        android:id="@+id/DelayWifiView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TotCellView"
+        android:layout_below="@+id/TotCell"
+        android:layout_toLeftOf="@+id/TotCell"
+        android:text="Delay Wifi [s]:" />
+
+    <TextView
+        android:id="@+id/DelayCellView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/DelayWifiView"
+        android:layout_below="@+id/DelayWifi"
+        android:layout_toLeftOf="@+id/DelayCell"
+        android:text="Delay Cell [s]:" />
+
+    <TextView
+        android:id="@+id/RateWifiView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/DelayCellView"
+        android:layout_below="@+id/DelayCell"
+        android:layout_toLeftOf="@+id/DelayCell"
+        android:text="RWF [Mbps]:" />
+
+    <TextView
+        android:id="@+id/RateCellView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/RateWifiView"
+        android:layout_below="@+id/RateWifiView"
+        android:text="RC [Mbps]:" />
+
+    <TextView
+        android:id="@+id/DelayTView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/RateCellView"
+        android:layout_below="@+id/RateCellView"
+        android:text="Delay [s]:" />
+
+    <TextView
+        android:id="@+id/DelayT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/DelayTView"
+        android:layout_alignBottom="@+id/DelayTView"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_toRightOf="@+id/RateWifiView"
+        android:gravity="center"
+        android:text="..." />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:text="Final Statistic"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/WFView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:layout_marginLeft="68dp"
+        android:layout_marginTop="61dp"
+        android:text="% wifi flows:" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/DelayTView"
+        android:layout_below="@+id/DelayTView"
+        android:text="Avg DWF [s]:" />
+
+    <TextView
+        android:id="@+id/avgDWF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/DelayT"
+        android:layout_below="@+id/DelayT"
+        android:layout_toRightOf="@+id/TotCellView"
+        android:gravity="center"
+        android:text="..." />
+    
+    <TextView
+        android:id="@+id/lamda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextView01"
+        android:layout_marginLeft="68dp"
+        android:gravity="center"
+        android:text="Arrival Rate:" />
+     
+     <TextView
+        android:id="@+id/lamda_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/avgDWF"
+        android:layout_below="@+id/avgDWF"
+        android:layout_toRightOf="@+id/lamda"
+        android:layout_marginLeft="12dp"
+        android:gravity="center"
+        android:text="..." />
+    
+     <TextView
+        android:id="@+id/duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lamda"
+        android:layout_marginLeft="68dp"
+        android:gravity="center"
+        android:text="Duration:" />
+     
+     <TextView
+        android:id="@+id/duration_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/lamda_value"
+        android:layout_below="@+id/lamda_value"
+        android:layout_toRightOf="@+id/duration"
+        android:layout_marginLeft="31dp"
+        android:gravity="center"
+        android:text="..." />
+     
+</RelativeLayout>

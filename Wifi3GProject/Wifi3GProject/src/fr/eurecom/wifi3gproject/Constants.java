@@ -72,6 +72,10 @@ public class Constants {
 	
 	
 	/* ADDED CODE FOR DELAY OFFLOADING */
+	
+	public static int TOTAL_TASKS_COMING_DURING_OFF_PERIOD = 0;
+	public static int TOTAL_TASKS_BEING_QUEUED = 0;
+	
 	public static boolean IS_WIFI_AVAILABLE = true;
 	public static int NUM_OF_RETRIES = 1000;
 	public static enum TASK_STATE {

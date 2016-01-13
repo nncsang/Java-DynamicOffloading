@@ -431,6 +431,7 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 						 * Check for there are any incoming tasks
 						 * Submit these tasks to  ExecutorService
 						 * Set these tasks' state to SUMITTED_TO_EXECUTOR
+						 * 
 						 * */
 						for(int i = 0; i < Tasks.size(); i++){
 							if (Tasks.get(i).delay == currTime * 1000){
@@ -455,7 +456,7 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 							
 							/* Logically turn-off wifi by shutting down ExecutorService */
 							executor.shutdownNow();
-						
+
 							/* 
 							 * 
 							 * Add all running tasks to queue
@@ -496,7 +497,7 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 						Constants.IS_WIFI_AVAILABLE = false;
 							
 						/* 
-						 * Check for there are any incoming tasks
+						 * Check for there is any incoming tasks
 						 * Submit these tasks to  queue
 						 * Set these tasks' state to ADDED_TO_QUEUE
 						 * 
@@ -713,5 +714,4 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 			timer.cancel();
 		}
 	}
-	
 }
