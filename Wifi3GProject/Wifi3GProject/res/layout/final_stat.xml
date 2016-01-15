@@ -222,31 +222,13 @@
         android:gravity="center"
         android:text="..." />
     
-     <TextView
-        android:id="@+id/duration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/lamda"
-        android:layout_marginLeft="68dp"
-        android:gravity="center"
-        android:text="Duration:" />
-     
-     <TextView
-        android:id="@+id/duration_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/lamda_value"
-        android:layout_below="@+id/lamda_value"
-        android:layout_toRightOf="@+id/duration"
-        android:layout_marginLeft="31dp"
-        android:gravity="center"
-        android:text="..." />
+    
      
      <TextView
         android:id="@+id/task_comming"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/duration"
+        android:layout_below="@+id/lamda"
         android:layout_marginLeft="68dp"
         android:gravity="center"
         android:text="Task OFF: " />
@@ -255,8 +237,8 @@
         android:id="@+id/task_comming_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/duration_value"
-        android:layout_below="@+id/duration_value"
+        android:layout_alignRight="@+id/lamda_value"
+        android:layout_below="@+id/lamda_value"
         android:layout_toRightOf="@+id/task_comming"
         android:layout_marginLeft="31dp"
         android:gravity="center"
@@ -278,6 +260,26 @@
         android:layout_alignRight="@+id/task_comming_value"
         android:layout_below="@+id/task_comming_value"
         android:layout_toRightOf="@+id/task_queue"
+        android:layout_marginLeft="31dp"
+        android:gravity="center"
+        android:text="..." />
+     
+      <TextView
+        android:id="@+id/duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/task_queue"
+        android:layout_marginLeft="68dp"
+        android:gravity="center"
+        android:text="Duration:" />
+     
+     <TextView
+        android:id="@+id/duration_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/task_queue_value"
+        android:layout_below="@+id/task_queue_value"
+        android:layout_toRightOf="@+id/duration"
         android:layout_marginLeft="31dp"
         android:gravity="center"
         android:text="..." />

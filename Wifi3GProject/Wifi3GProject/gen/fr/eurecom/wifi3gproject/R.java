@@ -78,8 +78,8 @@ public final class R {
         public static final int cellRate=0x7f0b0018;
         public static final int configuration=0x7f0b0011;
         public static final int delayConstraint=0x7f0b001a;
-        public static final int duration=0x7f0b0035;
-        public static final int duration_value=0x7f0b0036;
+        public static final int duration=0x7f0b0039;
+        public static final int duration_value=0x7f0b003a;
         public static final int editArrivalRate=0x7f0b000c;
         public static final int editDelayConstraint=0x7f0b001b;
         public static final int editRateCell=0x7f0b0019;
@@ -95,10 +95,10 @@ public final class R {
         public static final int spinner1=0x7f0b0012;
         public static final int spinner2=0x7f0b0013;
         public static final int switch1=0x7f0b0014;
-        public static final int task_comming=0x7f0b0037;
-        public static final int task_comming_value=0x7f0b0038;
-        public static final int task_queue=0x7f0b0039;
-        public static final int task_queue_value=0x7f0b003a;
+        public static final int task_comming=0x7f0b0035;
+        public static final int task_comming_value=0x7f0b0036;
+        public static final int task_queue=0x7f0b0037;
+        public static final int task_queue_value=0x7f0b0038;
         public static final int textView1=0x7f0b0020;
         public static final int textView3GIP=0x7f0b0002;
         public static final int textViewGatewayWifiIP=0x7f0b0003;

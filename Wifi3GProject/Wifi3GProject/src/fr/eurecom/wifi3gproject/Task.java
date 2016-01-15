@@ -512,7 +512,10 @@ public class Task implements  Callable<String>{
 		}
 		
 		if(Interface == API.GetInterfaceWifi()){
+			if (end_time-start_time == 0)
+				end_time += 1;
 			LoggerManager.LogRates("WIFI: ID "+ ID +" SIZE " + total + " time: " + (end_time-start_time) / 1000);
+			
 			rate_wifi = ( total / ((end_time-start_time) / 1000)) * 8;
 			sum_rate_wifi += rate_wifi;
 			counter_wifi_flows++;

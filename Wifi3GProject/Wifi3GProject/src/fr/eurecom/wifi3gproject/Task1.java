@@ -175,8 +175,8 @@ public class Task1 implements  Callable<String>{
 					//return "FAIL SIZE: " + this.filesize + " ID: " + ID + "url " + url.toString();
 				}
 				
-				if (Constants.debug) System.out.println("FILE "+ID+" file size: "+this.filesize+" th: "+DownloadFilesTask.Threshold + " req time: " + req_time);
-				if(this.filesize > DownloadFilesTask.Threshold){
+				if (Constants.debug) System.out.println("FILE "+ID+" file size: "+this.filesize+" th: "+DownloadFilesTask1.Threshold + " req time: " + req_time);
+				if(this.filesize > DownloadFilesTask1.Threshold){
 					 if(first_wifi_flow){
 						 start_wifi_time = System.currentTimeMillis();
 						 if (Constants.debug) System.out.println("FIRST_WIFI_FLOW: " + start_wifi_time);
@@ -192,7 +192,7 @@ public class Task1 implements  Callable<String>{
 			
 				switch (policy) {
 				case Constants.WIFI_3G :
-					if(this.filesize > DownloadFilesTask.Threshold){
+					if(this.filesize > DownloadFilesTask1.Threshold){
 						ConfigureWifi();
 						Interface=API.GetInterfaceWifi();
 					}else{
@@ -505,6 +505,7 @@ public class Task1 implements  Callable<String>{
 	total = total / 1048576; // MB 
 	//Log.d("SIZE", "ID: " + ID + " SIZE: " + total);
 	Size = Size + total * 8 ;  // Mbps
+	Task.Size = Size;
 	//System.out.println("TOTAL SIZE: " + Size);
 		
 		synchronized (Statistics.TotBytes) {
@@ -516,7 +517,11 @@ public class Task1 implements  Callable<String>{
 			rate_wifi = ( total / ((end_time-start_time) / 1000)) * 8;
 			sum_rate_wifi += rate_wifi;
 			counter_wifi_flows++;
-			if (Constants.debug) System.out.println("FILESIZE "+ID+ " RATE: " + rate_wifi + " SIZE " + total +" time: "+(end_time-start_time)+" Wifi th: "+DownloadFilesTask.Threshold);
+			
+			Task.sum_rate_wifi += rate_wifi;
+			Task.counter_wifi_flows++;
+			
+			if (Constants.debug) System.out.println("FILESIZE "+ID+ " RATE: " + rate_wifi + " SIZE " + total +" time: "+(end_time-start_time)+" Wifi th: "+DownloadFilesTask1.Threshold);
 			synchronized (Statistics.WifiRate) {
 				Statistics.WifiRate.add(rate_wifi);
 			}
@@ -525,7 +530,11 @@ public class Task1 implements  Callable<String>{
 			rate_cell = (total / ((end_time-start_time) / 1000)) * 8;
 			sum_rate_cell += rate_cell;
 			counter_cell_flows++;
-			if (Constants.debug) System.out.println("FILESIZE "+ID+ " RATE: " + rate_cell + " SIZE " + total +" time: "+(end_time-start_time)+ " 3G th: "+DownloadFilesTask.Threshold);
+			
+			Task.sum_rate_cell += rate_cell;
+			Task.counter_cell_flows++;
+			
+			if (Constants.debug) System.out.println("FILESIZE "+ID+ " RATE: " + rate_cell + " SIZE " + total +" time: "+(end_time-start_time)+ " 3G th: "+DownloadFilesTask1.Threshold);
 			synchronized (Statistics.CellRate) {
 				Statistics.CellRate.add(rate_cell);
 			}
@@ -534,11 +543,17 @@ public class Task1 implements  Callable<String>{
 	double end_flow_time = System.currentTimeMillis();
 	
 	
-	if (this.filesize > DownloadFilesTask.Threshold){
-		if (end_flow_time > max_duration_wifi ) max_duration_wifi = end_flow_time;
+	if (this.filesize > DownloadFilesTask1.Threshold){
+		if (end_flow_time > max_duration_wifi ) {
+			max_duration_wifi = end_flow_time;
+			Task.max_duration_wifi = end_flow_time;
+		}
 		if (Constants.debug) System.out.println("WIFI_TIME: " + max_duration_wifi);
 	}else{
-		if (end_flow_time > max_duration_cell ) max_duration_cell = end_flow_time;
+		if (end_flow_time > max_duration_cell ) {
+			max_duration_cell = end_flow_time;
+			Task.max_duration_cell = end_flow_time;
+		}
 		if (Constants.debug) System.out.println("CELL_TIME: " + max_duration_cell);
 	}
 	

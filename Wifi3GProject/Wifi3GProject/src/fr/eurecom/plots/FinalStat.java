@@ -142,14 +142,15 @@ public class FinalStat extends Activity {
 			TextView D = (TextView)findViewById(R.id.DelayT);
 			TextView Dur = (TextView)findViewById(R.id.duration_value);
 			
-			TextView comming_task = (TextView)findViewById(R.id.task_comming_value);
-			TextView queued_task = (TextView)findViewById(R.id.task_queue_value);
-			
 			/* ADDED FOR DELAY OFFLOADING 
 			 * 
 			 */
-			comming_task.setText(Constants.TOTAL_TASKS_COMING_DURING_OFF_PERIOD);
-			queued_task.setText(Constants.TOTAL_TASKS_BEING_QUEUED);
+			TextView comming_task = (TextView)findViewById(R.id.task_comming_value);
+			TextView queued_task = (TextView)findViewById(R.id.task_queue_value);
+			
+			
+			comming_task.setText(String.valueOf(Constants.TOTAL_TASKS_COMING_DURING_OFF_PERIOD));
+			queued_task.setText(String.valueOf(Constants.TOTAL_TASKS_BEING_QUEUED));
 			
 			//WF.setText(String.valueOf(WifiFlows));
 			//CF.setText(String.valueOf(CellFlows));	
@@ -204,7 +205,7 @@ private void parseRatesLog(File myFile){
 					tot2 += Double.parseDouble(parts[1]);
 				}
 				
-		}
+			}
 		
 			//aveRwf=Math.ceil(tot1/nodes.getLength()); //Average rate wf
 			//aveRc=Math.ceil(tot2/nodes.getLength()); //Average rate cell
