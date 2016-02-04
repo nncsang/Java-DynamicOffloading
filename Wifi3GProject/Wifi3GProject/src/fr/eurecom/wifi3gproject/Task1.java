@@ -79,7 +79,7 @@ public class Task1 implements  Callable<String>{
 			urlStr = url;
 			this.url = new URL(url);
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		this.ID=ID;
 		this.delay=delay;
@@ -129,7 +129,7 @@ public class Task1 implements  Callable<String>{
 				
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			 }
 	}
 
@@ -170,7 +170,7 @@ public class Task1 implements  Callable<String>{
 				req_time = (req_time_end > req_time_start) ? (req_time_end - req_time_start) : 0;
 				
 				while(this.filesize < 0) {
-					LoggerManager.LogErrors("FAIL SIZE ERROR FOR URL: " + url.toString());
+					//LoggerManager.LogErrors("FAIL SIZE ERROR FOR URL: " + url.toString());
 					GetFileSizeANDServerIP();
 					//return "FAIL SIZE: " + this.filesize + " ID: " + ID + "url " + url.toString();
 				}
@@ -294,7 +294,7 @@ public class Task1 implements  Callable<String>{
 
 	@SuppressWarnings("resource")
 	protected String startDownload(double req_time){
-		System.out.println("Start dowloading " + ID + " from " + total);	
+		System.out.println("Start dowloading " + ID + " from " + (int)total);	
 	try{
 		HttpURLConnection connection = (HttpURLConnection) this.url.openConnection();
 		
@@ -572,7 +572,7 @@ public class Task1 implements  Callable<String>{
 	
 	}catch(Exception e){
 		//e.printStackTrace();	
-		System.out.println(e.getMessage());
+		//System.out.println(e.getMessage());
 		/*
 		if (e.getMessage().contains("No address associated with hostname")){
 			while(true){
@@ -594,7 +594,7 @@ public class Task1 implements  Callable<String>{
 			return "PAUSE";
 		}
 		*/
-		System.out.println(ID + ": is cancled");
+		//System.out.println(ID + ": is cancled");
 		if (num_of_retry < Constants.NUM_OF_RETRIES){
 			return "C" + ID;
 		}
@@ -618,6 +618,7 @@ public class Task1 implements  Callable<String>{
 	//	wl.release();
 	}
   }
+	
 	
 	public boolean isCancelled(){
 		return Thread.currentThread().isInterrupted();

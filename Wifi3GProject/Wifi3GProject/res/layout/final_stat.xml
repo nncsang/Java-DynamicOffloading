@@ -264,7 +264,8 @@
         android:gravity="center"
         android:text="..." />
      
-      <TextView
+     
+     <TextView
         android:id="@+id/duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -282,7 +283,7 @@
         android:layout_toRightOf="@+id/duration"
         android:layout_marginLeft="31dp"
         android:gravity="center"
-        android:text="..." />
+        android:text="..." /> 
      
      
 </RelativeLayout>

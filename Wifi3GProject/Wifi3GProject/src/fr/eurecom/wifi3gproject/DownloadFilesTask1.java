@@ -1,6 +1,7 @@
 package fr.eurecom.wifi3gproject;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
@@ -33,6 +34,7 @@ import android.net.TrafficStats;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import fr.eurecom.plots.PlotList;
@@ -111,6 +113,21 @@ public class DownloadFilesTask1 extends AsyncTask<Void, Integer, Void>{
 			System.out.println(i + ": " + url);
 			i++;
 		}
+		
+		String Directory = "Downloaded Files";
+		String sdcard_path = Environment.getExternalStorageDirectory().getPath()+ "/SpringProject2014/"+Directory;
+		
+		File root = new File(sdcard_path);
+		File[] Files = root.listFiles();
+		if(Files != null) {
+		    int j;
+		    for(j = 0; j < Files.length; j++) {
+		    	Files[j].getAbsolutePath();
+		    	Files[j].delete();
+		        //System.out.println(Files[j].getAbsolutePath());
+		        //System.out.println(Files[j].delete());
+		    }
+		}
 	}
 	
 	@Override
@@ -126,10 +143,10 @@ public class DownloadFilesTask1 extends AsyncTask<Void, Integer, Void>{
 					ParalellExecution();
 				} catch (MalformedURLException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 		}else{
 				SequentialExecution();
@@ -202,9 +219,9 @@ public class DownloadFilesTask1 extends AsyncTask<Void, Integer, Void>{
 					
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						//e.printStackTrace();
 					} catch (ExecutionException e) {
-						System.out.println(e.toString());
+						//System.out.println(e.toString());
 						// TODO Auto-generated catch block
 						//e.printStackTrace();
 					}
@@ -498,7 +515,7 @@ public class DownloadFilesTask1 extends AsyncTask<Void, Integer, Void>{
 								Constants.TOTAL_TASKS_BEING_QUEUED++;
 								Constants.task_state.set(i, Constants.TASK_STATE.ADDED_TO_QUEUE);
 								
-								System.out.println("Add coming " + i + " to queue");
+								System.out.println("Time: " + currTime + " - Add coming " + i + " to queue");
 							}
 						}
 					}
@@ -539,7 +556,7 @@ public class DownloadFilesTask1 extends AsyncTask<Void, Integer, Void>{
 				
 			     
 				} catch (Exception e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 		}else{
 			
@@ -565,7 +582,7 @@ public class DownloadFilesTask1 extends AsyncTask<Void, Integer, Void>{
 		     
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			} 
 			executor.shutdown();
 		}
@@ -588,8 +605,9 @@ public class DownloadFilesTask1 extends AsyncTask<Void, Integer, Void>{
 		if (!wifiEnabled)
 			return false;
 		
+		/*
         try {
-            InetAddress ipAddr = InetAddress.getByName("www.google.fr"); //You can replace it with your name
+            InetAddress ipAddr = InetAddress.getByName("www.google.fr"); //You can replace it with your favorite domain's name
 
             if (ipAddr.equals("")) {
                 return false;
@@ -600,11 +618,14 @@ public class DownloadFilesTask1 extends AsyncTask<Void, Integer, Void>{
         } catch (Exception e) {
             return false;
         }
+        */
+		
+		return isOnline();
     }
 	
 	public void cancel_task_handler(int ID){
 		_mutex1.lock();
-		System.out.println("Task " + ID + " is canceled");
+		//System.out.println("Task " + ID + " is canceled");
 		_mutex1.unlock();
 	}
 	
@@ -698,6 +719,19 @@ public class DownloadFilesTask1 extends AsyncTask<Void, Integer, Void>{
 		}
 			
 		return 0;
+	}
+	
+	public Boolean isOnline() {
+	    try {
+	        Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 -W 70 8.8.8.8");
+	        int returnVal = p1.waitFor();
+	        boolean reachable = (returnVal==0);
+	        return reachable;
+	    } catch (Exception e) {
+	        // TODO Auto-generated catch block
+	       // e.printStackTrace();
+	    }
+	    return false;
 	}
 	
 	

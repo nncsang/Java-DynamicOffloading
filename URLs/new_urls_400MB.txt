@@ -1,7 +1,6 @@
 http://upload.wikimedia.org/wikipedia/commons/f/fa/%22_12_-_ITALY_-_artichoke_in_bloom_-_BIO_high_quality_food_%28organic_farming%29.JPG
 http://imgsrc.hubblesite.org/hu/db/images/hs-2006-10-a-hires_jpg.jpg
 http://publicdomainarchive.com/?ddownload=47405
-https://www.dropbox.com/s/r5l8t0nfjb3rp3b/135H.jpg?dl=1
 http://download.thinkbroadband.com/20MB.zip
 https://laplanh.googlecode.com/files/ZendFramework-1.7.8-minimal.tar.gz
 http://www.rngresearch.com/download/block0.rng
@@ -15,7 +14,6 @@ http://cdn4.tricksmachine.com/wp-content/uploads/2011/06/two_worlds.jpg
 http://upload.wikimedia.org/wikipedia/commons/f/fa/%22_12_-_ITALY_-_artichoke_in_bloom_-_BIO_high_quality_food_%28organic_farming%29.JPG
 http://imgsrc.hubblesite.org/hu/db/images/hs-2006-10-a-hires_jpg.jpg
 http://publicdomainarchive.com/?ddownload=47405
-https://www.dropbox.com/s/r5l8t0nfjb3rp3b/135H.jpg?dl=1
 http://download.thinkbroadband.com/20MB.zip
 https://laplanh.googlecode.com/files/ZendFramework-1.7.8-minimal.tar.gz
 http://www.rngresearch.com/download/block0.rng
@@ -29,7 +27,6 @@ http://cdn4.tricksmachine.com/wp-content/uploads/2011/06/two_worlds.jpg
 http://upload.wikimedia.org/wikipedia/commons/f/fa/%22_12_-_ITALY_-_artichoke_in_bloom_-_BIO_high_quality_food_%28organic_farming%29.JPG
 http://imgsrc.hubblesite.org/hu/db/images/hs-2006-10-a-hires_jpg.jpg
 http://publicdomainarchive.com/?ddownload=47405
-https://www.dropbox.com/s/r5l8t0nfjb3rp3b/135H.jpg?dl=1
 http://download.thinkbroadband.com/20MB.zip
 https://laplanh.googlecode.com/files/ZendFramework-1.7.8-minimal.tar.gz
 http://www.rngresearch.com/download/block0.rng

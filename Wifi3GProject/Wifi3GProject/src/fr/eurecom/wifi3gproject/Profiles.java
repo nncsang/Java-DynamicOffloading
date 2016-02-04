@@ -3,7 +3,7 @@ package fr.eurecom.wifi3gproject;
 public class Profiles {
 	
 	//double[] lambda = {0.1, 0.5, 1000.0};
-	String[] number_of_files = {"new_urls.txt","new_urls.txt","new_urls_1350MB.txt"};
+	String[] number_of_files = {"warm_up.txt","wifi_on_off.txt","new_urls_1350MB.txt", "short_list.txt"};
 	int[] number_of_threads = {4, 50, 150};
 	double[] utilization = {0.1, 0.5, 0.9};
 	
@@ -35,7 +35,7 @@ public class Profiles {
 	
 	public void sparseNetworkWiFiOnOffPatternEnabled(double arrival_rate, double on, double off){
 		Constants.LAMBDA_IN = arrival_rate;
-		Constants.URL_NAME = number_of_files[1];
+		Constants.URL_NAME = number_of_files[3];
 		Constants.THREADS = number_of_threads[0];
 		Constants.debug = false;
 		Constants.enable_arrival_pattern = true;

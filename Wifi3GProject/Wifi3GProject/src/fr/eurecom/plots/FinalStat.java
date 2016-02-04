@@ -148,7 +148,6 @@ public class FinalStat extends Activity {
 			TextView comming_task = (TextView)findViewById(R.id.task_comming_value);
 			TextView queued_task = (TextView)findViewById(R.id.task_queue_value);
 			
-			
 			comming_task.setText(String.valueOf(Constants.TOTAL_TASKS_COMING_DURING_OFF_PERIOD));
 			queued_task.setText(String.valueOf(Constants.TOTAL_TASKS_BEING_QUEUED));
 			
@@ -169,7 +168,8 @@ public class FinalStat extends Activity {
 			DW.setText(String.valueOf(DelayWifi));
 			DC.setText(String.valueOf(DelayCell));
 			D.setText(String.valueOf(DelayT));
-			Dur.setText(String.valueOf(DownloadFilesTask.downloadfilestask_duration) + "\nW: " + ((Task.max_duration_wifi - Task.start_wifi_time) / 1000) + "\nC: " + ((Task.max_duration_cell - Task.start_cell_time) / 1000));
+			//Dur.setText(String.valueOf(DownloadFilesTask.downloadfilestask_duration) + "\nW: " + ((Task.max_duration_wifi - Task.start_wifi_time) / 1000) + "\nC: " + ((Task.max_duration_cell - Task.start_cell_time) / 1000));
+			Dur.setText(String.valueOf(DownloadFilesTask.downloadfilestask_duration) + "\nW: " + ((Task.max_duration_wifi - Task.start_wifi_time) / 1000));
 			
 			if (Constants.debug) System.out.println("WIFI_DURATION: " + ((Task.max_duration_wifi - Task.start_wifi_time) / 1000));
 			if (Constants.debug) System.out.println("CELL_DURATION: " + ((Task.max_duration_cell - Task.start_cell_time) / 1000));

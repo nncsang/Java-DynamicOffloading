@@ -70,16 +70,27 @@ public class Task implements  Callable<String>{
 	public String urlStr = "";
 	public int num_of_retry = 0;
 	DownloadFilesTask activity;
-	private double start_time = 0;
+	public double start_time = 0;
 	double total=0;
 	long start_reading_time = 0;
 	
+	
+	/* ADDED FOR DELAY OFFLOADING 
+	 * 
+	 */
+	
+	private double total_time_in_off_period = 0;
+	public double last_time_in_off = 0;
+	
 	public Task(String url, int ID, long delay, int N, int policy, double task_start_time, DownloadFilesTask activity){
+		total_time_in_off_period = 0;
+		last_time_in_off = 0;
+
 		try {
 			urlStr = url;
 			this.url = new URL(url);
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		this.ID=ID;
 		this.delay=delay;
@@ -129,7 +140,7 @@ public class Task implements  Callable<String>{
 				
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			 }
 	}
 
@@ -161,6 +172,12 @@ public class Task implements  Callable<String>{
 			 * first try of downloading
 			 * 
 			 * */
+			
+			if (last_time_in_off != 0){
+				total_time_in_off_period += (System.currentTimeMillis() - last_time_in_off);
+				System.out.println(ID + ": total time in off_period " + total_time_in_off_period + " ms");
+			}
+			
 			if (num_of_retry == 1){
 				double req_time_start = System.currentTimeMillis();
 				double task_waiting_time =  req_time_start - this.task_start_time;
@@ -170,7 +187,7 @@ public class Task implements  Callable<String>{
 				req_time = (req_time_end > req_time_start) ? (req_time_end - req_time_start) : 0;
 				
 				while(this.filesize < 0) {
-					LoggerManager.LogErrors("FAIL SIZE ERROR FOR URL: " + url.toString());
+					//LoggerManager.LogErrors("FAIL SIZE ERROR FOR URL: " + url.toString());
 					GetFileSizeANDServerIP();
 					//return "FAIL SIZE: " + this.filesize + " ID: " + ID + "url " + url.toString();
 				}
@@ -294,7 +311,7 @@ public class Task implements  Callable<String>{
 
 	@SuppressWarnings("resource")
 	protected String startDownload(double req_time){
-		System.out.println("Start dowloading " + ID + " from " + total);	
+		System.out.println("Start dowloading " + ID + " from " + (int)total);	
 	try{
 		HttpURLConnection connection = (HttpURLConnection) this.url.openConnection();
 		
@@ -362,8 +379,10 @@ public class Task implements  Callable<String>{
 	 * 
 	 * */
 	if (num_of_retry == 1){
+		
 		start_time = System.currentTimeMillis();//Calendar.getInstance().getTimeInMillis();
 		start_reading_time = System.currentTimeMillis();
+		//System.out.println("Set start time: " + ID + ": " + start_time);
 	}
 	
 	//System.out.println("ID: " + ID + " - Number of try: " + num_of_retry + " - " + req_time +  " " + start_time);
@@ -440,6 +459,7 @@ public class Task implements  Callable<String>{
 			output.flush();
 			output.close();
 			
+			last_time_in_off = System.currentTimeMillis();
 			//_mutex.lock();
 			//activity.cancel_task_handler(ID);
 			//_mutex.lock();
@@ -482,8 +502,13 @@ public class Task implements  Callable<String>{
 	
 		
 	double end_time = System.currentTimeMillis(); //Calendar.getInstance().getTimeInMillis();
-	double task_download_time = end_time - start_time;
-	if (Constants.debug) System.out.println("download time for the task ID " +ID + " is " + task_download_time + "ms");
+	double task_download_time = end_time - start_time - total_time_in_off_period;
+	/*
+	System.out.println("Start time: " + start_time);
+	System.out.println("End time: " + end_time);
+	System.out.println("Duration: " + (end_time - start_time));
+	System.out.println("Off time: " + total_time_in_off_period);
+	System.out.println("download time for the task ID " +ID + " is " + task_download_time + "ms"); */
 
 	if (output != null)	{
 		output.flush();
@@ -514,12 +539,21 @@ public class Task implements  Callable<String>{
 		if(Interface == API.GetInterfaceWifi()){
 			if (end_time-start_time == 0)
 				end_time += 1;
+			
+			if (end_time-start_time - total_time_in_off_period == 1){
+				System.out.println("***********************************");
+				System.out.println("DEAD OR REDIRECTED LINK: " + ID + ": " + urlStr);
+				System.out.println("***********************************");
+			}
+			
+			//LoggerManager.LogRates("WIFI: ID "+ ID +" SIZE " + total + " time: " + (end_time-start_time - total_time_in_off_period) / 1000);
 			LoggerManager.LogRates("WIFI: ID "+ ID +" SIZE " + total + " time: " + (end_time-start_time) / 1000);
 			
+			//rate_wifi = ( total / ((end_time-start_time - total_time_in_off_period) / 1000)) * 8;
 			rate_wifi = ( total / ((end_time-start_time) / 1000)) * 8;
 			sum_rate_wifi += rate_wifi;
 			counter_wifi_flows++;
-			if (Constants.debug) System.out.println("FILESIZE "+ID+ " RATE: " + rate_wifi + " SIZE " + total +" time: "+(end_time-start_time)+" Wifi th: "+DownloadFilesTask.Threshold);
+			if (Constants.debug) System.out.println("FILESIZE "+ID+ " RATE: " + rate_wifi + " SIZE " + total +" time: "+(end_time-start_time - total_time_in_off_period)+" Wifi th: "+DownloadFilesTask.Threshold);
 			synchronized (Statistics.WifiRate) {
 				Statistics.WifiRate.add(rate_wifi);
 			}

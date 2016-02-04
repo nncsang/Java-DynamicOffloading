@@ -1,6 +1,7 @@
 package fr.eurecom.wifi3gproject;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -32,6 +33,7 @@ import android.net.TrafficStats;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import fr.eurecom.plots.PlotList;
@@ -86,6 +88,8 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 		 * 
 		 * */
 		total_processed = 0;
+		Constants.TOTAL_TASKS_COMING_DURING_OFF_PERIOD = 0;
+		Constants.TOTAL_TASKS_BEING_QUEUED = 0;
 		
 		/* ADDED FOR DELAY OFFLOADING */
 		this.wifiManager = (WifiManager) myAct.getSystemService(Context.WIFI_SERVICE); 
@@ -114,6 +118,21 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 			System.out.println(i + ": " + url);
 			i++;
 		}
+		
+		String Directory = "Downloaded Files";
+		String sdcard_path = Environment.getExternalStorageDirectory().getPath()+ "/SpringProject2014/"+Directory;
+		
+		File root = new File(sdcard_path);
+		File[] Files = root.listFiles();
+		if(Files != null) {
+		    int j;
+		    for(j = 0; j < Files.length; j++) {
+		    	Files[j].getAbsolutePath();
+		    	Files[j].delete();
+		        //System.out.println(Files[j].getAbsolutePath());
+		        //System.out.println(Files[j].delete());
+		    }
+		}
 	}
 	
 	@Override
@@ -129,10 +148,10 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 					ParalellExecution();
 				} catch (MalformedURLException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 		}else{
 				SequentialExecution();
@@ -205,7 +224,7 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 					
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						//e.printStackTrace();
 					} catch (ExecutionException e) {
 						System.out.println(e.toString());
 						// TODO Auto-generated catch block
@@ -250,7 +269,10 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 		//for(int i=0; i < N; i++){
 
 			if (Constants.enable_arrival_pattern) {
-
+				
+				Constants.TOTAL_TASKS_COMING_DURING_OFF_PERIOD = 0;
+				Constants.TOTAL_TASKS_BEING_QUEUED = 0;
+				
 				double size = FileSize(new URL(urls.get(i)));
 
 				if ((policy == Constants.WIFI_3G)
@@ -413,8 +435,9 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 							if (Constants.queue.size() > 0){
 								for(int i = 0; i < Constants.queue.size(); i++){
 									int task_id = Constants.queue.get(i);
-									ecs.submit(Tasks.get(task_id));
+									//Tasks.get(task_id).update_time_in_off();
 									
+									ecs.submit(Tasks.get(task_id));
 									Constants.task_state.set(task_id, Constants.TASK_STATE.SUMITTED_TO_EXECUTOR);
 									System.out.println("Take " + Tasks.get(Constants.queue.get(i)).ID + " out from queue and add to executor's queue");
 								}
@@ -472,6 +495,7 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 									Constants.queue.add(i); 
 									Constants.task_state.set(i, Constants.TASK_STATE.ADDED_TO_QUEUE);
 									System.out.println("Add running " + i + " to queue");
+									Constants.TOTAL_TASKS_BEING_QUEUED++;
 								}
 							}
 							
@@ -489,6 +513,9 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 									Constants.queue.add(i); 
 									Constants.task_state.set(i, Constants.TASK_STATE.ADDED_TO_QUEUE);
 									System.out.println("Add waitting " + i + " to queue");
+									Constants.TOTAL_TASKS_BEING_QUEUED++;
+									
+									//Tasks.get(i).last_time_in_off = System.currentTimeMillis();
 								}
 							}
 						}
@@ -507,7 +534,12 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 							if (Tasks.get(i).delay == currTime * 1000){
 								Constants.queue.add(i);
 								Constants.task_state.set(i, Constants.TASK_STATE.ADDED_TO_QUEUE);
-								System.out.println("Add coming " + i + " to queue");
+								System.out.println("Time: " + currTime + " - Add coming " + i + " to queue");
+								
+								Constants.TOTAL_TASKS_COMING_DURING_OFF_PERIOD++;
+								Constants.TOTAL_TASKS_BEING_QUEUED++;
+								
+								//Tasks.get(i).last_time_in_off = System.currentTimeMillis();
 							}
 						}
 					}
@@ -548,7 +580,7 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 				
 			     
 				} catch (Exception e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 		}else{
 			
@@ -574,7 +606,7 @@ public class DownloadFilesTask extends AsyncTask<Void, Integer, Void>{
 		     
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			} 
 			executor.shutdown();
 		}

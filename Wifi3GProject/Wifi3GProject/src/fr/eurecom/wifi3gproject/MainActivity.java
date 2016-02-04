@@ -54,6 +54,8 @@ public class MainActivity extends Activity {
 	private static int Connection = Constants.NO_CONNECTIONS;
 	//public DownloadFilesTask1 Downloader;
 	public DownloadFilesTask Downloader;
+	public DownloadFilesTask1 Downloader1;
+	public boolean isSimulated = true;
 	Activity myActivity = this;
 	public static int policy;
 	public static int profile;
@@ -122,7 +124,7 @@ public class MainActivity extends Activity {
 					new StringBuilder(), 10000, true);
 			ShowNetworkInfo();
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		
@@ -131,9 +133,46 @@ public class MainActivity extends Activity {
 		SetOnRefreshListener();
 		mp.start();
 		
+		/*
+		Thread thread = new Thread(new Runnable(){
+		    @Override
+		    public void run() {
+		        try {
+		        	long sum = 0;
+		            for(int i = 0; i < 10000; i++){
+		            	long start = System.currentTimeMillis();
+		            	isOnline();
+		            	//System.out.println(Boolean.toString(isOnline()));
+		            	sum += System.currentTimeMillis() - start;
+		            	
+		            }
+		            
+		            System.out.println((double)sum / 1000.0);
+		        } catch (Exception e) {
+		            //e.printStackTrace();
+		        }
+		    }
+		});
+		
+
+		thread.start(); 
+		*/
 		
 	}
 
+	public Boolean isOnline() {
+	    try {
+	        Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 -W 70 8.8.8.8");
+	        int returnVal = p1.waitFor();
+	        boolean reachable = (returnVal==0);
+	        return reachable;
+	    } catch (Exception e) {
+	        // TODO Auto-generated catch block
+	        //e.printStackTrace();
+	    }
+	    return false;
+	}
+	
 	public void SetOnRefreshListener() {
 		Button b = (Button) findViewById(R.id.Refresh);
 		b.setOnClickListener(new OnClickListener() {
@@ -143,7 +182,7 @@ public class MainActivity extends Activity {
 				try {
 					ShowNetworkInfo();
 				} catch (IOException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 
@@ -306,11 +345,22 @@ public class MainActivity extends Activity {
 				} else {
 					mode = false;
 				}
-
+				
+				
+				Switch mySwitch2 = (Switch) findViewById(R.id.switch2);
+				if (mySwitch2.isChecked()) {
+					isSimulated = false;
+				} else {
+					isSimulated = true;
+				}
+				
+				//System.out.println(isSimulated);
+				
 				findViewById(R.id.Refresh).setClickable(false);
 				findViewById(R.id.spinner1).setClickable(false);
 				findViewById(R.id.spinner2).setClickable(false);
 				findViewById(R.id.switch1).setClickable(false);
+				findViewById(R.id.switch2).setClickable(false);
 				
 				
 				
@@ -352,12 +402,14 @@ public class MainActivity extends Activity {
 				progressDialog.setProgress(0);
 				// ArrayList<String> lines =
 				// readFromFile(Environment.getExternalStorageDirectory().getPath()+"/SpringProject2014/url_unique_links.txt");
-	
-				Downloader = new DownloadFilesTask(lines, policy, mode, myActivity);
-				Downloader.execute();
 				
-				//Downloader = new DownloadFilesTask1(lines, policy, mode, myActivity);
-				//Downloader.execute();
+				if (isSimulated == true){
+					Downloader = new DownloadFilesTask(lines, policy, mode, myActivity);
+					Downloader.execute();
+				}else{
+					Downloader1 = new DownloadFilesTask1(lines, policy, mode, myActivity);
+					Downloader1.execute();
+				}
 			}
 		});
 	}
@@ -557,6 +609,7 @@ public class MainActivity extends Activity {
 		} catch (Exception e) {// Catch exception if any
 			System.err.println("Error: " + e.getMessage());
 			
+			/*
 			return  new ArrayList<String>(
 				    Arrays.asList(
 				    		"http://publicdomainarchive.com/?ddownload=47405",
@@ -566,6 +619,56 @@ public class MainActivity extends Activity {
 				    		"http://iliketowastemytime.com/system/files/snub-nosed-monkey-hd-wallpaper.jpg?download=1",
 				    		"http://www.mellowholidays.com/Views/Uploads/FrontImage/893512536-134037High_Resolution_Sunset_by_thereal7.jpg",
 				    		"http://mirror.internode.on.net/pub/test/10meg.test"));
+				  */
+			return  new ArrayList<String>(
+				    Arrays.asList(
+				    		"http://psycho-therapie-toulouse.fr/wp-content/uploads/2015/06/7.jpg",
+				    			"http://www.keenthemes.com/preview/conquer/assets/plugins/jcrop/demos/demo_files/image1.jpg",
+				    			"http://payload422.cargocollective.com/1/20/655817/10758337/d3e42620.gif",
+				    			"http://climate.nasa.gov/assets/intro_image.jpg",
+				    			"http://blog.jimdo.com/wp-content/uploads/2014/01/tree-247122.jpg",
+				    			"http://7-themes.com/data_images/out/14/6817014-image.jpg",
+				    			"https://www.gimp.org/tutorials/Lite_Quickies/lordofrings_hst_big.jpg",
+				    			"http://lokeshdhakar.com/projects/lightbox2/images/image-3.jpg",
+				    			"http://hearthstone.judgehype.com/screenshots/images/divers/wow/05.jpg",
+				    			"http://hearthstone.judgehype.com/screenshots/images/divers/wow/08.jpg",
+				    			"http://www.museonarlaten.fr/museon/webdav/site/museon/shared/contenu/Image%205.jpg",
+				    			"http://www.marcogiordanotd.com/blog/wp-content/uploads/2014/01/image9Kcomp.jpg",
+				    			"https://www.apple.com/euro/macbook-pro/c/generic/features-retina/images/macbook_pro_with_retina_screenshot.jpg",
+				    			"http://mirror.internode.on.net/pub/test/10meg.test",
+				    			"http://mirror.internode.on.net/pub/test/10meg.test1",
+				    			"http://mirror.internode.on.net/pub/test/10meg.test2",
+				    			"http://mirror.internode.on.net/pub/test/10meg.test3",
+				    			"http://mirror.internode.on.net/pub/test/10meg.test4",
+				    			"http://mirror.internode.on.net/pub/test/10meg.test5",
+				    			"http://mirror.internode.on.net/pub/test/50meg.test",
+				    			"http://mirror.internode.on.net/pub/test/5meg.test1",
+				    			"http://mirror.internode.on.net/pub/test/5meg.test2",
+				    			"http://mirror.internode.on.net/pub/test/5meg.test3",
+				    			"http://mirror.internode.on.net/pub/test/5meg.test4",
+				    			"http://mirror.internode.on.net/pub/test/5meg.test5",
+				    			"http://download.linnrecords.com/test/m4a/recit24bit.aspx",
+				    			"http://www.mfiles.co.uk/mp3-downloads/Toccata-and-Fugue-Dm.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/book1-prelude01.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/book1-prelude02.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/book1-fugue02.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/book1-prelude03.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/book1-prelude06.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/book1-fugue10.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/book1-prelude14.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/book1-fugue14.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/book1-prelude24.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/book1-fugue24.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/book1-fugue24-string-quartet.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/book2-prelude02.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/bizet-jeux-d-enfants-toupie.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/arabesque1.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/dvorak-symphony9-2-from-the-New-World.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/dvorak-symphony9-2-from-the-New-World-cor-anglais-piano.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/dvorak-symphony9-2-from-the-New-World-piano.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/haydn-piano-sonata-31-1.mp3",
+				    			"http://www.mfiles.co.uk/mp3-downloads/deutschlandlied.mp3"));
+			
 		}
 
 		return lines;
@@ -594,7 +697,10 @@ public class MainActivity extends Activity {
 							editor.commit();
 							editor.putString("StatOnOff", "OFF");
 							editor.commit();
-							Downloader.cancel(true);
+							if (isSimulated)
+								Downloader.cancel(true);
+							else
+								Downloader1.cancel(true);
 							Intent Plot = new Intent(getApplicationContext(),
 									PlotList.class);
 							Bundle bundle = new Bundle();

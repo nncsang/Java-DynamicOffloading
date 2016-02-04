@@ -251,17 +251,32 @@
             android:textAlignment="gravity"
             android:layout_marginLeft="35dp"/>
     </LinearLayout>
-
-    <Switch
-        android:id="@+id/switch1"
+	
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/borders"
-        android:textOff="Sequential"
-        android:textOn="Parallel" />
-    
+        android:layout_height="wrap_content" >
+
+	    <Switch
+	        android:id="@+id/switch1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="20dp"
+	        android:layout_marginLeft="15dp"
+	        android:layout_gravity="center_horizontal"
+	        android:background="@drawable/borders"
+	        android:textOff="Sequential"
+	        android:textOn="Parallel" />
+	    <Switch
+	        android:id="@+id/switch2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="20dp"
+	        android:layout_marginLeft="7dp"
+	        android:layout_gravity="center_horizontal"
+	        android:background="@drawable/borders"
+	        android:textOff="Simulate"
+	        android:textOn="Real" />
+   	</LinearLayout>
     <Button
         android:id="@+id/StartDownload"
         style="@style/btnStyle"
