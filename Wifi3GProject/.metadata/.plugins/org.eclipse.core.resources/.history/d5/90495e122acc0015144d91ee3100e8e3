@@ -1,0 +1,73 @@
+
+import java.util.Random;
+import java.util.ArrayList;
+import org.uncommons.maths.random.ExponentialGenerator;
+
+public class Main{
+	
+	static double L_ON = 1.0 / (200 * 1000.0);
+	static double L_OFF = 1.0 / (200 * 1000.0);
+	
+	public static ArrayList<Long> WifiPattern(){
+		
+		ArrayList<Long> wifi_on_off = new ArrayList<Long>();
+		
+		long interval_on = 0;
+		long interval_off = 0;
+		
+		
+		
+		Random rng = new Random();
+		rng.setSeed(150);
+		
+		ExponentialGenerator gen_on = new ExponentialGenerator(L_ON, rng);
+		ExponentialGenerator gen_off = new ExponentialGenerator(L_OFF, rng);
+		
+		for (int j=0; j < 12; j++){
+			
+			interval_on = (long) (interval_off + gen_on.nextValue());
+			wifi_on_off.add(interval_on / 1000);
+			
+		    interval_off = (long) (interval_on + gen_off.nextValue());
+		    wifi_on_off.add(interval_off / 1000);
+		}
+		
+		
+		return wifi_on_off;
+	}
+	
+     public static void main(String []args){
+        System.out.println("Hello World");
+        
+        double LAMBDA_IN = 0.01;
+        Random rand = new Random();
+		rand.setSeed(300);
+		ExponentialGenerator arr = new ExponentialGenerator(LAMBDA_IN, rand);
+		
+		ArrayList<Long> wifi_pattern = WifiPattern();
+		double pre = 0;
+		
+		
+		int off = 0;
+		for(int i = 0; i < 100; i++){
+			long cur = (long)(pre + arr.nextValue());
+					
+					int index = -1;
+			for(int k=wifi_pattern.size() - 1; k >=0; k--){
+				if (cur <= wifi_pattern.get(k)){
+					index = k;
+				}else{
+					break;
+				}
+			}
+			
+			if ( (index % 2) == 0){
+				off++;
+			}
+		}
+		
+		System.out.println((int)(L_ON/ (L_ON + L_OFF)) * 100);
+		System.out.println(off);
+		
+     }
+}

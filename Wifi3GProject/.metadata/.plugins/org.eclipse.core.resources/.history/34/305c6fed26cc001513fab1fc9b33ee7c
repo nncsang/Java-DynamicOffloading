@@ -1,0 +1,13 @@
+public class HelloWorld{
+
+     public static void main(String []args){
+        System.out.println("Hello World");
+        
+        LAMBDA_IN = 0.01;
+        Random rand = new Random();
+		rand.setSeed(300);
+		ExponentialGenerator arr = new ExponentialGenerator(LAMBDA_IN, rand);
+		
+		
+     }
+}
